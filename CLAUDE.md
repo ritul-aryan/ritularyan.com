@@ -51,6 +51,34 @@ do not widen that.
 Extra JS on `/` is acceptable. `/fast` is the light path and that is the whole
 reason it exists.
 
+### IntroLoader — why it exists
+
+**The loader is functional, not decorative. It is the FULL vs FAST decision
+point.** It is modelled on Gmail's "load basic HTML" link: on weak hardware or a
+poor connection the visitor gets a visible chance to bail out to the fast page
+rather than watch a heavy page stutter in.
+
+**Never remove or shorten it as an optimisation.** Deleting it to improve a
+Lighthouse score removes the only moment a struggling visitor is offered the
+light path.
+
+Spec — match the prototype's timing and easing exactly:
+
+- Warp-streak canvas, glyph-by-glyph `ऋतुल आर्यन`, progress bar to 100%,
+  `SKIP → PLAIN TEXT VERSION`, ~1.7s.
+- `SKIP` must be **visible and clickable from the first frame**,
+  keyboard-focusable, and reachable by <kbd>Tab</kbd>.
+- The loader is a **visual overlay only** — all page content stays in the DOM
+  beneath it. It must never gate rendering, block crawlers, or defer content.
+- Under `prefers-reduced-motion`, skip the loader entirely and land on `/`.
+  (See approved deviation 3 — the prototype instead shows it for 350ms.)
+
+**ASK before changing any of:**
+
+- the fixed ~1.7s timer (it is a fixed duration, *not* real load progress);
+- the fact that it runs on every visit;
+- substituting anything, if any part proves impossible in Astro.
+
 ## `/fast` route
 
 No framework and no hydration. "Zero client JS" means no framework and no
@@ -69,9 +97,9 @@ inline `window.__astro_dev_toolbar__` blob that are absent from the build.
 
 ## Approved deviations from the prototype
 
-These two are **explicitly approved by Ritul** (2026-08-03). Do **not** revert
-them as "fidelity violations". They are the ONLY approved deviations —
-everything else stays exact.
+These are **explicitly approved by Ritul** (2026-08-03). Do **not** revert them
+as "fidelity violations". This register is exhaustive — any departure from the
+prototype not listed here is a bug. Everything else stays exact.
 
 ### 1. `/fast` sections get `id` attributes the prototype lacks
 
@@ -105,6 +133,40 @@ visitor is looking at fast mode.
 `/fast`, `FAST` is highlighted. On `/`, `FULL` is highlighted.
 
 **Reason:** the prototype's hardcoding is a bug, not a design decision.
+
+### 3. Under `prefers-reduced-motion`, the IntroLoader is skipped entirely
+
+**Prototype behaviour:** the loader still runs, at a shortened duration —
+`const dur = this.reduce ? 350 : 1700;` (`deploy/index.html:1276`). It is not
+skipped.
+
+**What we do instead:** skip the loader entirely and land directly on `/`.
+
+**Reason:** instructed by Ritul (2026-08-03) alongside the IntroLoader spec, and
+consistent with the project-wide rule that `prefers-reduced-motion` means canvas
+static and no animation. Recorded here because it *is* a departure from the
+prototype and would otherwise contradict the "only approved deviations" clause
+above. **Flagged to Ritul for confirmation — if he meant "350ms, as the
+prototype", this entry is wrong and should be corrected to match.**
+
+## The About column — preserved, not removed
+
+The 230px 4:5 frame in the About section is **preserved, not removed**. A photo
+is coming later and must drop straight into that cell with no re-layout, so the
+two-column geometry and the frame's exact dimensions are load-bearing.
+
+Fill it **only** with content that already exists in the prototype:
+
+- `28.6139°N 77.2090°E`
+- `DELHI NCR, INDIA`
+- `IST` live — the same clock as the header
+
+Styled as an instrument readout using the existing mono token. Keep the
+coordinate caption where the design puts it. **Invent no new copy.**
+
+Screenshot it and show Ritul **before committing step 3**. If it reads as filler
+he will switch to full-width prose with the coordinates in the left rail — so do
+not treat this cell as settled until he has seen it rendered.
 
 ## Workflow
 
