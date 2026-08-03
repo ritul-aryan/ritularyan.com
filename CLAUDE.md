@@ -183,6 +183,46 @@ not treat this cell as settled until he has seen it rendered.
 - `git init` belongs inside `ritularyan/`. The parent folder is NOT a repo and
   must never become one.
 
+## Hard prohibitions
+
+### Never add Vercel Analytics or Speed Insights
+
+`@vercel/analytics` and `@vercel/speed-insights` are **declined, deliberately**
+(Ritul, 2026-08-03). Both inject a client-side script, which would break the
+zero-JS requirement on `/fast`. Do not add either package at any point, and do
+not enable Web Analytics or Speed Insights in the Vercel dashboard.
+
+### `public/robots.txt` is deliberate — do not remove before step 8
+
+```
+User-agent: *
+Disallow: /
+```
+
+The production Vercel deployment is publicly reachable and does **not** get an
+automatic `noindex` — only preview deployments do. This file exists to keep a
+half-built site out of search indexes. It is replaced with a real `robots.txt`
+at step 8, when the domain goes live. **Removing or relaxing it before then is a
+mistake, not a cleanup.**
+
+### The custom domain is not connected yet
+
+`ritularyan.com` is deliberately **not** connected until there is real content.
+Do not reference the custom domain in any config, `<link rel="canonical">`,
+`og:url`, or sitemap until Ritul says it is live. All canonical/OG URL work
+belongs to step 8.
+
+## Environment notes
+
+- Vercel is connected to the repo: framework preset **Astro**, output `dist`.
+  Every push produces a deployment URL, checked on real hardware — claims about
+  overflow, console errors and which scripts load are independently verifiable.
+- Do **not** run git commands against the folder through the Cowork device
+  bridge. The bridge's mount layer denies `unlink`, so git creates
+  `.git/index.lock` and cannot remove it, leaving a stale lock behind. Verified
+  2026-08-03: native git in that same folder works fine — the restriction is the
+  bridge only. Run git in the container or natively, never through the bridge.
+
 ## Other required work
 
 - `<title>`, meta description, canonical, Open Graph + Twitter card, theme-color,
