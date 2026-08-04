@@ -10,7 +10,9 @@
  * prototype's deliberate choice, settled — see CLAUDE.md.
  *
  * The clock face and theme toggle are driven by the inline scripts in
- * BaseLayout. The clock's expandable panel arrives with LiveClock.
+ * BaseLayout, so neither is a dead control on /fast. The clock's expandable
+ * panel is a `/`-only affordance and arrives with LiveClock; on /fast the clock
+ * renders as plain text rather than a button that would do nothing.
  */
 import { COPY } from '../data/copy';
 
@@ -39,10 +41,22 @@ const isFull = mode === 'full';
 
     <div class="rk-bar__spacer"></div>
 
-    <button class="rk-bar__btn" data-rk-hide data-cursor title="Expand the clock" type="button">
-      <span class="rk-clock__face" data-clock>{header.clockPlaceholder}</span>
-      <span class="rk-clock__caret">▼</span>
-    </button>
+    {
+      isFull ? (
+        <button class="rk-bar__btn" data-rk-hide data-cursor title="Expand the clock" type="button">
+          <span class="rk-clock__face" data-clock>
+            {header.clockPlaceholder}
+          </span>
+          <span class="rk-clock__caret">▼</span>
+        </button>
+      ) : (
+        <span class="rk-bar__btn rk-bar__btn--static" data-rk-hide>
+          <span class="rk-clock__face" data-clock>
+            {header.clockPlaceholder}
+          </span>
+        </span>
+      )
+    }
 
     <button
       class="rk-theme-btn"

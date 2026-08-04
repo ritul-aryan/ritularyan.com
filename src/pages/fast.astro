@@ -1,0 +1,120 @@
+---
+/**
+ * `/fast` — the light path.
+ *
+ * No framework, no hydration, no canvas, no retrieval engine. The only JS is the
+ * two inline blocks in BaseLayout (theme + clock face), which are sanctioned —
+ * see CLAUDE.md.
+ *
+ * Approved deviation 1: the sections carry real ids the prototype lacks, so the
+ * header's existing anchors resolve in-page instead of bouncing the visitor onto
+ * the heavy route.
+ *
+ * Content is the prototype's fast block verbatim. Education is where the
+ * prototype puts it — in the summary line ("BCA in AI & Data Science, expected
+ * 2027"), not under a heading of its own.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import { COPY } from '../data/copy';
+import { SEED } from '../data/projects';
+
+const { fast, meta } = COPY;
+const [akin, ethara] = fast.experience.jobs;
+---
+
+<BaseLayout title={meta.title}>
+  <Header mode="fast" />
+
+  <div id="top" class="rk-fast">
+    <div class="rk-fast__inner">
+      <div class="rk-fast__note">{fast.note}</div>
+
+      <div id="about" class="rk-fast__head">
+        <div class="rk-fast__name">{fast.name}</div>
+        <div class="rk-fast__dev">{fast.devanagari}</div>
+      </div>
+
+      <div class="rk-fast__summary">
+        {fast.summaryLines[0]}<br />{fast.summaryLines[1]}
+      </div>
+
+      {/* The prototype spaces its separators: `<a>…</a> · <a>…</a>`. The text-node
+          extraction trimmed those spaces off, so they are restored explicitly. */}
+      <div id="contact" class="rk-fast__contact">
+        {
+          fast.contactLinks.map((link, i) => (
+            <>
+              {i > 0 && <span class="rk-fast__sep"> {fast.contactSeparator} </span>}
+              <a
+                href={link.href}
+                {...(link.href.startsWith('http')
+                  ? { target: '_blank', rel: 'noreferrer' }
+                  : {})}
+              >
+                {link.label}
+              </a>
+            </>
+          ))
+        }
+      </div>
+
+      <h2 id="work" class="rk-fast__h">{fast.experience.heading}</h2>
+
+      <div id="now" class="rk-fast__block">
+        <div class="rk-fast__role">
+          {akin.title} <span class="rk-fast__meta">{akin.meta}</span>
+        </div>
+        <div class="rk-fast__bullets">
+          {akin.bullets.map((b, i) => <>{i > 0 && <br />}{b}</>)}
+        </div>
+      </div>
+
+      <div class="rk-fast__block">
+        <div class="rk-fast__role">
+          {ethara.title} <span class="rk-fast__meta">{ethara.meta}</span>
+        </div>
+        <div class="rk-fast__bullets">
+          {ethara.bullets.map((b, i) => <>{i > 0 && <br />}{b}</>)}
+        </div>
+      </div>
+
+      <h2 id="patent" class="rk-fast__h">{fast.patent.heading}</h2>
+      <div class="rk-fast__block">
+        <div class="rk-fast__role">{fast.patent.title}</div>
+        <div class="rk-fast__bullets">
+          {fast.patent.bullets.map((b, i) => <>{i > 0 && <br />}{b}</>)}
+        </div>
+      </div>
+
+      <h2 id="projects" class="rk-fast__h">{fast.projectsHeading}</h2>
+      {/* The space between the two spans is its own text node, not the first
+          character of the second span — matching the prototype's structure. */}
+      <div class="rk-fast__block">
+        {
+          SEED.map((project) => (
+            <div class="rk-fast__project">
+              <span>{project.name}</span> <span class="rk-fast__meta">— {project.description}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <h2 id="stack" class="rk-fast__h">{fast.skills.heading}</h2>
+      <div class="rk-fast__bullets rk-fast__block">
+        {fast.skills.lines.map((l, i) => <>{i > 0 && <br />}{l}</>)}
+      </div>
+
+      <h2 class="rk-fast__h">{fast.certifications.heading}</h2>
+      <div class="rk-fast__bullets rk-fast__block">{fast.certifications.body}</div>
+
+      <h2 id="recognition" class="rk-fast__h">{fast.recognition.heading}</h2>
+      <div class="rk-fast__bullets rk-fast__block">{fast.recognition.body}</div>
+
+      {/* Left as the prototype's plain dim sentence, not a link. Cross-linking
+          /fast -> / is already satisfied by the header's FULL button and the
+          brand logo, so recolouring this line would be a gratuitous change. */}
+      <div class="rk-fast__foot">{fast.footerNote}</div>
+    </div>
+  </div>
+</BaseLayout>
