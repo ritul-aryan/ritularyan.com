@@ -70,8 +70,11 @@ Spec — match the prototype's timing and easing exactly:
   keyboard-focusable, and reachable by <kbd>Tab</kbd>.
 - The loader is a **visual overlay only** — all page content stays in the DOM
   beneath it. It must never gate rendering, block crawlers, or defer content.
-- Under `prefers-reduced-motion`, skip the loader entirely and land on `/`.
-  (See approved deviation 3 — the prototype instead shows it for 350ms.)
+- Under `prefers-reduced-motion`, keep the prototype's behaviour:
+  `const dur = this.reduce ? 350 : 1700;` (`deploy/index.html:1276`). The loader
+  still runs, at the shortened duration. **Do not skip it.** Skipping would
+  remove the `SKIP → PLAIN TEXT` choice from exactly the users most likely to
+  want the fast path. Considered and rejected, 2026-08-04.
 
 **ASK before changing any of:**
 
@@ -97,9 +100,10 @@ inline `window.__astro_dev_toolbar__` blob that are absent from the build.
 
 ## Approved deviations from the prototype
 
-These are **explicitly approved by Ritul** (2026-08-03). Do **not** revert them
-as "fidelity violations". This register is exhaustive — any departure from the
-prototype not listed here is a bug. Everything else stays exact.
+There are exactly **two**, both **explicitly approved by Ritul** (2026-08-03).
+Do **not** revert them as "fidelity violations". This register is exhaustive —
+any departure from the prototype not listed here is a bug. Everything else stays
+exact.
 
 ### 1. `/fast` sections get `id` attributes the prototype lacks
 
@@ -134,20 +138,35 @@ visitor is looking at fast mode.
 
 **Reason:** the prototype's hardcoding is a bug, not a design decision.
 
-### 3. Under `prefers-reduced-motion`, the IntroLoader is skipped entirely
+## Considered and rejected — do not re-raise
 
-**Prototype behaviour:** the loader still runs, at a shortened duration —
-`const dur = this.reduce ? 350 : 1700;` (`deploy/index.html:1276`). It is not
-skipped.
+These look like prototype bugs but are settled. Re-opening them wastes a round
+trip.
 
-**What we do instead:** skip the loader entirely and land directly on `/`.
+### The header's `WORK` link points at `#projects`, not `#work` — intentional
 
-**Reason:** instructed by Ritul (2026-08-03) alongside the IntroLoader spec, and
-consistent with the project-wide rule that `prefers-reduced-motion` means canvas
-static and no animation. Recorded here because it *is* a departure from the
-prototype and would otherwise contradict the "only approved deviations" clause
-above. **Flagged to Ritul for confirmation — if he meant "350ms, as the
-prototype", this entry is wrong and should be corrected to match.**
+`.dc.html:118` / `deploy/index.html:132`. The Experience section (`id="work"`)
+is therefore unreachable from the header; the only link to it is the footer's
+`02 · कार्य / Experience`.
+
+**This is a design choice, not a typo, and it stays as-is.** It is *not* an
+approved deviation because nothing deviates — we reproduce it exactly. The
+reasoning (Ritul, 2026-08-04): "Work" is standard portfolio vocabulary for a
+projects section, and the header is already a curated five-item subset that omits
+About, Experience and Recognition. Experience is reachable from the footer index.
+Unlike the FULL/FAST hardcoding, this has a coherent intentional reading.
+
+### Skipping the IntroLoader under `prefers-reduced-motion` — rejected
+
+Briefly recorded as a third approved deviation, then cancelled (2026-08-04).
+Keep the prototype's `dur = reduce ? 350 : 1700`. See the IntroLoader section.
+
+### Four-decimal coordinates in the About panel — rejected
+
+An earlier About-panel spec cited `28.6139°N 77.2090°E`. That string appears zero
+times in the prototype; `28.61` appears three times. It came from Ritul's resume,
+not the design. The fidelity rule wins: use the extracted `28.61°N 77.21°E`
+everywhere.
 
 ## The About column — preserved, not removed
 
@@ -157,7 +176,7 @@ two-column geometry and the frame's exact dimensions are load-bearing.
 
 Fill it **only** with content that already exists in the prototype:
 
-- `28.6139°N 77.2090°E`
+- `28.61°N 77.21°E` — the prototype's value, extracted, not the resume's
 - `DELHI NCR, INDIA`
 - `IST` live — the same clock as the header
 

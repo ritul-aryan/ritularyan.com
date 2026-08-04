@@ -108,12 +108,7 @@ export const COPY = {
 
   about: {
     rail: { devanagari: "परिचय", label: "00 / Who I am" } as RailLabel,
-    /**
-     * The coordinate caption under the 230px 4:5 frame. NOTE: the prototype
-     * gives two decimal places. See CLAUDE.md — Ritul's About-panel spec cites
-     * four (28.6139°N 77.2090°E), which does not appear anywhere in the
-     * prototype. Flagged, unresolved; this value is the prototype's.
-     */
+    /** The coordinate caption under the 230px 4:5 frame. */
     coordinates: "28.61°N 77.21°E",
     paragraphs: [
       "I'm twenty-something, based in Delhi NCR, and most of what I know I learned by building the thing badly first. I'm drawn to problems where a single model isn't enough — where you need several of them checking each other, a retrieval layer that doesn't hallucinate, and an audit trail you can actually defend in a room full of people who didn't write the code.",
