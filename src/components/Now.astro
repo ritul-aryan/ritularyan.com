@@ -1,0 +1,53 @@
+---
+/**
+ * Now / SAGE.
+ *
+ * Stat values render at their final figures. CountUpStats (step 7) resets them
+ * to zero and animates up, driven by the data-count / data-suffix attributes the
+ * prototype uses — kept here so the island needs no extra wiring.
+ */
+import { COPY } from '../data/copy';
+
+const { now } = COPY;
+---
+
+<section id="now" class="rk-section" data-screen-label="Now" data-reveal>
+  <div class="rk-split" data-rk-split>
+    <div class="rk-rail" data-rk-rail data-rk-pad>
+      <div class="rk-rail__dev">{now.rail.devanagari}</div>
+      <div class="rk-rail__label">{now.rail.label}</div>
+    </div>
+
+    <div class="rk-body" data-rk-pad>
+      <div class="rk-now__head">
+        <h2 class="rk-now__title">{now.title}</h2>
+        <span class="rk-badge">{now.badge}</span>
+      </div>
+
+      <p class="rk-now__body">{now.body}</p>
+
+      <div class="rk-stats">
+        {
+          now.stats.map((stat) => (
+            <div class="rk-stat">
+              <div
+                class="rk-stat__value"
+                data-count={String(stat.count)}
+                {...(stat.suffix ? { 'data-suffix': stat.suffix } : {})}
+              >
+                {stat.value}
+              </div>
+              <div class="rk-stat__label">{stat.label}</div>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="rk-tags">
+        {now.chips.map((chip) => <span class="rk-tag" data-chip={chip.key}>{chip.label}</span>)}
+      </div>
+
+      <div class="rk-now__disclaimer">{now.disclaimer}</div>
+    </div>
+  </div>
+</section>

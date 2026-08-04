@@ -1,0 +1,56 @@
+---
+/**
+ * Experience. id="work".
+ *
+ * NOTE: the header's WORK link deliberately points at #projects, not here — a
+ * design choice, settled, see CLAUDE.md. This section is reached from the footer
+ * index.
+ *
+ * The spine renders at full height in step 3; TimelineSpine (step 7) scales it
+ * from 0 on reveal.
+ */
+import { COPY } from '../data/copy';
+
+const { work } = COPY;
+const [current, previous] = work.roles;
+---
+
+<section id="work" class="rk-section" data-screen-label="Work" data-reveal>
+  <div class="rk-split" data-rk-split>
+    <div class="rk-rail" data-rk-rail data-rk-pad>
+      <div class="rk-rail__dev">{work.rail.devanagari}</div>
+      <div class="rk-rail__label">{work.rail.label}</div>
+    </div>
+
+    <div class="rk-work__body" data-rk-pad>
+      <div class="rk-timeline">
+        <div class="rk-timeline__spine" data-spine></div>
+
+        <div class="rk-node rk-node--first" data-node>
+          <div class="rk-node__pip"></div>
+          <div class="rk-node__period">
+            <span>{current.period}</span>
+            <span class="rk-node__live"></span>
+          </div>
+          <h3 class="rk-node__org">{current.org}</h3>
+          <div class="rk-node__meta">{current.meta}</div>
+          <ul class="rk-node__list">
+            {current.bullets.map((b) => <li>{b}</li>)}
+          </ul>
+        </div>
+
+        <div class="rk-node" data-node>
+          <div class="rk-node__pip rk-node__pip--hollow"></div>
+          <div class="rk-node__period rk-node__period--dim">
+            <span>{previous.period}</span>
+          </div>
+          <h3 class="rk-node__org rk-node__org--sm">{previous.org}</h3>
+          <div class="rk-node__meta">{previous.meta}</div>
+          <ul class="rk-node__list">
+            {previous.bullets.map((b) => <li>{b}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

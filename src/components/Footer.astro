@@ -1,0 +1,71 @@
+---
+/**
+ * Footer.
+ *
+ * NOTE: the index links contain Devanagari but the prototype renders them in
+ * IBM Plex Mono, which ships no Devanagari glyphs — so those characters fall
+ * back to whatever the visitor's OS provides. Reproduced faithfully; see the
+ * font-fallback note reported at step 3.
+ */
+import { COPY } from '../data/copy';
+import { FACT_COUNT } from '../data/facts';
+
+const { footer } = COPY;
+---
+
+<footer class="rk-footer" data-screen-label="Footer" data-reveal>
+  <div class="rk-footer__grid" data-rk-split data-rk-foot>
+    <div>
+      <div class="rk-footer__heading">{footer.indexHeading}</div>
+      <div class="rk-footer__links" data-rk-links>
+        {footer.indexLinks.map((link) => <a href={link.href} data-cursor>{link.label}</a>)}
+      </div>
+    </div>
+
+    <div>
+      <div class="rk-footer__heading">{footer.elsewhereHeading}</div>
+      <div class="rk-footer__links" data-rk-links>
+        {
+          footer.elsewhereLinks.map((link) => (
+            <a
+              href={link.href}
+              data-cursor
+              {...(link.href.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : {})}
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div>
+      <div class="rk-footer__heading">{footer.howHeading}</div>
+      <div class="rk-footer__how">
+        {footer.howBefore} <em>{FACT_COUNT}</em> {footer.howAfter}
+      </div>
+    </div>
+
+    <div>
+      <div class="rk-footer__heading">{footer.statusHeading}</div>
+      <div class="rk-footer__status">
+        <span class="rk-footer__status-dot"></span>
+        <span>{footer.statusValue}</span>
+      </div>
+      <div class="rk-footer__statuslines">
+        {footer.statusLines[0]}<br />{footer.statusLines[1]}<br />{footer.statusLines[2]}
+      </div>
+    </div>
+  </div>
+
+  <div class="rk-footer__bigname-wrap">
+    <div class="rk-footer__bigname" data-glyphs="grapheme">{footer.bigName}</div>
+  </div>
+
+  <div class="rk-footer__bar" data-rk-footbar>
+    <span>{footer.copyright}</span>
+    <a href="#top" class="rk-footer__top" data-cursor>
+      <span>{footer.backToTop}</span><span>{footer.backToTopArrow}</span>
+    </a>
+  </div>
+</footer>

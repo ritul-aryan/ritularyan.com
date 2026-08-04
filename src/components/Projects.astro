@@ -1,0 +1,53 @@
+---
+/**
+ * Projects.
+ *
+ * Step 3 renders the 9 SEED entries. Step 7 replaces the source with a
+ * build-time GitHub fetch, keeping SEED as the fallback so the build never
+ * breaks when GitHub is down.
+ *
+ * data-skills carries the space-separated filter keys StackFilter matches on.
+ */
+import { COPY } from '../data/copy';
+import { SEED } from '../data/projects';
+
+const { projects } = COPY;
+---
+
+<section id="projects" class="rk-section" data-screen-label="Projects" data-reveal>
+  <div class="rk-split" data-rk-split>
+    <div class="rk-rail" data-rk-rail data-rk-pad>
+      <div class="rk-rail__dev">{projects.rail.devanagari}</div>
+      <div class="rk-rail__label">{projects.rail.label}</div>
+      <div class="rk-rail__note">
+        {projects.blurbBefore} <em>{projects.blurbTopic}</em> {projects.blurbAfter}
+      </div>
+      <div class="rk-rail__status">{projects.seedFeedStatus}</div>
+    </div>
+
+    <div class="rk-grid" data-rk-grid>
+      {
+        SEED.map((project, i) => (
+          <a
+            class="rk-card"
+            href={project.url}
+            target={project.url.startsWith('#') ? '_self' : '_blank'}
+            rel="noreferrer"
+            data-cursor
+            data-tilt
+            data-cursor-label={project.priv ? 'private · read about it' : 'open repo ↗'}
+            data-skills={project.skills}
+          >
+            <div class="rk-card__top">
+              <span>{String(i + 1).padStart(2, '0')}</span>
+              <span class="rk-card__badge">{project.badge}</span>
+            </div>
+            <div class="rk-card__name">{project.name}</div>
+            <div class="rk-card__desc">{project.description}</div>
+            <div class="rk-card__tags">{project.tags}</div>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>

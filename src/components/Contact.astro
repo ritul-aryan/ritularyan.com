@@ -1,0 +1,26 @@
+---
+/** Contact. The first link is the accent-filled email button. */
+import { COPY } from '../data/copy';
+
+const { contact } = COPY;
+---
+
+<section id="contact" class="rk-contact" data-screen-label="Contact" data-reveal>
+  <div class="rk-contact__inner" data-rk-pad>
+    <div class="rk-contact__headline">{contact.headline}</div>
+
+    <div class="rk-contact__links">
+      {
+        contact.links.map((link) => (
+          <a
+            href={link.href}
+            data-cursor
+            {...(link.href.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : {})}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>

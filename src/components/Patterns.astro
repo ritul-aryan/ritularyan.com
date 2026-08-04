@@ -1,0 +1,14 @@
+---
+/** The centred interstitial between About and Now. Has no id in the prototype. */
+import { COPY } from '../data/copy';
+
+const { patterns } = COPY;
+---
+
+<section class="rk-patterns" data-screen-label="Patterns" data-reveal>
+  <div class="rk-patterns__inner">
+    <div class="rk-patterns__dev">{patterns.devanagari}</div>
+    <div class="rk-patterns__headline">{patterns.headline}</div>
+    <div class="rk-patterns__body">{patterns.body}</div>
+  </div>
+</section>

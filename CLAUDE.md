@@ -100,10 +100,9 @@ inline `window.__astro_dev_toolbar__` blob that are absent from the build.
 
 ## Approved deviations from the prototype
 
-There are exactly **two**, both **explicitly approved by Ritul** (2026-08-03).
-Do **not** revert them as "fidelity violations". This register is exhaustive —
-any departure from the prototype not listed here is a bug. Everything else stays
-exact.
+There are exactly **three**, all **explicitly approved by Ritul**. Do **not**
+revert them as "fidelity violations". This register is exhaustive — any departure
+from the prototype not listed here is a bug. Everything else stays exact.
 
 ### 1. `/fast` sections get `id` attributes the prototype lacks
 
@@ -137,6 +136,28 @@ visitor is looking at fast mode.
 `/fast`, `FAST` is highlighted. On `/`, `FULL` is highlighted.
 
 **Reason:** the prototype's hardcoding is a bug, not a design decision.
+
+### 3. Tiro Devanagari Hindi is the Devanagari fallback on the IBM Plex Mono stack
+
+**Prototype behaviour:** the footer index links carry Devanagari
+(`00 · परिचय / About`, and five more) but are rendered in
+`font-family:'IBM Plex Mono',monospace`. IBM Plex Mono ships **no Devanagari
+glyphs**, so those characters fall back to whatever the operating system
+provides. Verified with DevTools `CSS.getPlatformFontsForNode`: 5 glyphs in that
+link came from **FreeSans as a system fallback**, not from any webfont.
+
+**What we do instead:** `--rk-font-mono` is
+`'IBM Plex Mono', 'Tiro Devanagari Hindi', monospace`. Plex Mono still wins for
+Latin; Tiro is only reached for codepoints Plex Mono cannot draw.
+
+**Reason** (Ritul, 2026-08-04): "render Devanagari in a font that ships no
+Devanagari glyphs" has no coherent intentional reading, so it fails the same test
+the FULL/FAST bug failed — unlike `WORK → #projects`, which passes it. The
+failure mode is tofu in the footer nav on machines with no Devanagari system
+font. Tiro is already loaded for Devanagari elsewhere, so this makes rendering
+deterministic rather than OS-dependent.
+
+**Do NOT widen the fallback to any other stack.** Only the mono stack.
 
 ## Considered and rejected — do not re-raise
 
@@ -174,18 +195,23 @@ The 230px 4:5 frame in the About section is **preserved, not removed**. A photo
 is coming later and must drop straight into that cell with no re-layout, so the
 two-column geometry and the frame's exact dimensions are load-bearing.
 
-Fill it **only** with content that already exists in the prototype:
+**Settled 2026-08-04 after reviewing three rendered options.** The frame holds an
+instrument readout of:
 
-- `28.61°N 77.21°E` — the prototype's value, extracted, not the resume's
-- `DELHI NCR, INDIA`
-- `IST` live — the same clock as the header
+- `DELHI NCR, INDIA` — top
+- `IST` + live time — bottom, on a rule
+- a centred registration mark in the space the photo will occupy
 
-Styled as an instrument readout using the existing mono token. Keep the
-coordinate caption where the design puts it. **Invent no new copy.**
+The coordinates `28.61°N 77.21°E` appear **exactly once**, in the caption below
+the frame, because that is where the design fixes them.
 
-Screenshot it and show Ritul **before committing step 3**. If it reads as filler
-he will switch to full-width prose with the coordinates in the left rail — so do
-not treat this cell as settled until he has seen it rendered.
+**Rejected:** putting the coordinates inside the panel as well. Every option
+carries the caption, so a panel copy prints them twice within ~250px — at the
+same size (obviously wrong) or at two sizes (reads as an error, not a
+hierarchy). The chosen layout is also structurally closest to the finished
+design: photo in frame, coordinates as caption.
+
+**Invent no new copy** in this cell.
 
 ## Workflow
 

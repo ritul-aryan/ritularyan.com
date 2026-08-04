@@ -1,0 +1,59 @@
+---
+/**
+ * Stack.
+ *
+ * Bars render at their final widths in step 3. SkillBars (step 7) scales them
+ * from 0 on reveal; StackFilter reads data-skill to dim project cards.
+ */
+import { COPY } from '../data/copy';
+
+const { stack } = COPY;
+const { languages, agentic, dataVision, platform } = stack.groups;
+const clouds = [agentic, dataVision, platform];
+---
+
+<section id="stack" class="rk-section" data-screen-label="Stack" data-reveal>
+  <div class="rk-split" data-rk-split>
+    <div class="rk-rail" data-rk-rail data-rk-pad>
+      <div class="rk-rail__dev">{stack.rail.devanagari}</div>
+      <div class="rk-rail__label">{stack.rail.label}</div>
+      <div class="rk-rail__note">
+        {stack.hintBefore} <em>{stack.hintAction}</em> {stack.hintAfter}
+      </div>
+    </div>
+
+    <div class="rk-stack" data-rk-pad data-rk-stack>
+      <div>
+        <div class="rk-stack__heading">{languages.heading}</div>
+        {
+          languages.bars.map((bar) => (
+            <div class="rk-skill" data-skill={bar.key} data-cursor>
+              <div class="rk-skill__row">
+                <span>{bar.label}</span>
+                <span class="rk-skill__level">{bar.level}</span>
+              </div>
+              <div class="rk-skill__track">
+                <div class="rk-skill__bar" data-bar style={`width:${bar.pct}%`}></div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      {
+        clouds.map((group) => (
+          <div>
+            <div class="rk-stack__heading">{group.heading}</div>
+            <div class="rk-cloud">
+              {group.chips.map((chip) => (
+                <span data-skill={chip.key} data-cursor>
+                  {chip.label}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

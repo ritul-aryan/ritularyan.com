@@ -1,13 +1,40 @@
 ---
+/**
+ * `/` — the full experience.
+ *
+ * Step 3: static shell. No interactivity, no islands, no canvas, no loader.
+ * Those arrive in steps 5-7 and are the only things that get JS.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Patterns from '../components/Patterns.astro';
+import Now from '../components/Now.astro';
+import Work from '../components/Work.astro';
+import Patent from '../components/Patent.astro';
+import Projects from '../components/Projects.astro';
+import Stack from '../components/Stack.astro';
+import Recognition from '../components/Recognition.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import { COPY } from '../data/copy';
 ---
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ritularyan.com</title>
-  </head>
-  <body>
-    <p>Scaffold.</p>
-  </body>
-</html>
+
+<BaseLayout title={COPY.meta.title}>
+  <Header mode="full" />
+
+  <div id="top" class="rk-page">
+    <Hero />
+    <About />
+    <Patterns />
+    <Now />
+    <Work />
+    <Patent />
+    <Projects />
+    <Stack />
+    <Recognition />
+    <Contact />
+    <Footer />
+  </div>
+</BaseLayout>

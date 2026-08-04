@@ -1,0 +1,133 @@
+---
+/**
+ * Base document shell for both routes.
+ *
+ * Fonts are self-hosted via @fontsource — there are no requests to
+ * fonts.googleapis.com or fonts.gstatic.com. Bricolage Grotesque comes from
+ * opsz.css rather than index.css because the prototype requested
+ * `opsz,wght@12..96` and index.css ships the wght axis only; opsz.css carries
+ * both axes in one file, so `font-optical-sizing: auto` behaves as designed on
+ * the 182px H1.
+ *
+ * Devanagari coverage is verified, not assumed — see scripts/verify-fonts.mjs.
+ *
+ * SCRIPTS: the two `is:inline` blocks below are the only JS on /fast. They are
+ * inline by design, not by accident — no external file, no extra request, no
+ * framework, no hydration. See CLAUDE.md, "/fast route". Everything else that
+ * moves is an island and loads only on /.
+ *
+ * Full metadata (canonical, OG, Twitter, favicon, theme-color) is the final
+ * commit. The custom domain must not appear anywhere until Ritul confirms it is
+ * live.
+ */
+import '@fontsource-variable/bricolage-grotesque/opsz.css';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '@fontsource/rozha-one/400.css';
+import '@fontsource/tiro-devanagari-hindi/400.css';
+
+import '../styles/tokens.css';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+
+    {/* Theme, applied before first paint so there is no wrong-theme flash.
+        Reads the same `rk-theme` key the prototype used. Absent attribute means
+        dark, which is the prototype's unconditional default. */}
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('rk-theme');
+          if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="rk-root">
+      <slot />
+    </div>
+
+    {/* Theme toggle and clock face. Kept inline so /fast has no dead controls
+        and pulls no external script. Timings match the prototype: the face
+        ticks every 1000ms and alternates between Delhi and UTC every 5200ms. */}
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var pad = function (n) {
+          return String(n).padStart(2, '0');
+        };
+
+        /* --- theme --- */
+        var label = document.querySelector('[data-theme-label]');
+        var setLabel = function () {
+          if (label) label.textContent = root.dataset.theme === 'light' ? 'DARK' : 'LIGHT';
+        };
+        setLabel();
+        var toggle = document.querySelector('[data-theme-toggle]');
+        if (toggle) {
+          toggle.addEventListener('click', function () {
+            var next = root.dataset.theme === 'light' ? 'dark' : 'light';
+            root.dataset.theme = next;
+            try {
+              localStorage.setItem('rk-theme', next);
+            } catch (e) {}
+            setLabel();
+          });
+        }
+
+        /* --- clock --- */
+        var face = document.querySelector('[data-clock]');
+        var panelTime = document.querySelector('[data-clock-ist]');
+        if (!face && !panelTime) return;
+        var which = 0;
+        var tick = function () {
+          var now = new Date();
+          var ist = new Date(now.getTime() + (330 + now.getTimezoneOffset()) * 60000);
+          if (face) {
+            face.textContent =
+              which % 2 === 0
+                ? 'DELHI · ' +
+                  pad(ist.getHours()) +
+                  ':' +
+                  pad(ist.getMinutes()) +
+                  ':' +
+                  pad(ist.getSeconds()) +
+                  ' IST'
+                : 'UTC · ' +
+                  pad(now.getUTCHours()) +
+                  ':' +
+                  pad(now.getUTCMinutes()) +
+                  ':' +
+                  pad(now.getUTCSeconds());
+          }
+          if (panelTime) {
+            panelTime.textContent = pad(ist.getHours()) + ':' + pad(ist.getMinutes());
+          }
+        };
+        tick();
+        setInterval(tick, 1000);
+        setInterval(function () {
+          which++;
+          tick();
+        }, 5200);
+      })();
+    </script>
+  </body>
+</html>

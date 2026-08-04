@@ -1,0 +1,51 @@
+---
+/** Patent. The application record is a fixed-width mono table. */
+import { COPY } from '../data/copy';
+
+const { patent } = COPY;
+---
+
+<section id="patent" class="rk-section" data-screen-label="Patent" data-reveal>
+  <div class="rk-split" data-rk-split>
+    <div class="rk-rail" data-rk-rail data-rk-pad>
+      <div class="rk-rail__dev">{patent.rail.devanagari}</div>
+      <div class="rk-rail__label">{patent.rail.label}</div>
+    </div>
+
+    <div class="rk-patent__body" data-rk-pad>
+      <div class="rk-patent__main">
+        <h2 class="rk-patent__title">{patent.title}</h2>
+        <p class="rk-patent__p">{patent.body}</p>
+
+        <div class="rk-tags">
+          {
+            patent.chips.map((chip) => (
+              <span class="rk-tag" {...(chip.key ? { 'data-chip': chip.key } : {})}>
+                {chip.label}
+              </span>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="rk-record">
+        <div class="rk-record__head">{patent.recordHeading}</div>
+        {
+          patent.record.map((row) => (
+            <div class="rk-record__row">
+              <span class="rk-record__key">{row.key}</span>
+              <span class="rk-record__val">
+                {row.lines.map((line, i) => (
+                  <Fragment>
+                    {i > 0 && <br />}
+                    {line}
+                  </Fragment>
+                ))}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

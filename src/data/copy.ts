@@ -191,14 +191,18 @@ export const COPY = {
       { label: "Navigation" },
     ] as readonly { readonly key?: string; readonly label: string }[],
     recordHeading: "APPLICATION RECORD",
+    /**
+     * Each value is a list of lines. The prototype hard-breaks the APPLICANT
+     * value across two lines with <br>; flattening it to one string changes the
+     * rendered cell, so the break is preserved as data.
+     */
     record: [
-      { key: "NO.", value: "202611015954 A" },
-      { key: "FILED", value: "12 FEB 2026" },
-      { key: "PUBLISHED", value: "27 MAR 2026" },
-      { key: "JOURNAL", value: "13/2026" },
-      /** Rendered across two lines in the prototype. */
-      { key: "APPLICANT", value: "K.R. Mangalam University" },
-    ] as readonly { key: string; value: string }[],
+      { key: "NO.", lines: ["202611015954 A"] },
+      { key: "FILED", lines: ["12 FEB 2026"] },
+      { key: "PUBLISHED", lines: ["27 MAR 2026"] },
+      { key: "JOURNAL", lines: ["13/2026"] },
+      { key: "APPLICANT", lines: ["K.R. Mangalam", "University"] },
+    ] as readonly { readonly key: string; readonly lines: readonly string[] }[],
   },
 
   projects: {

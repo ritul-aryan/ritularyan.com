@@ -1,0 +1,47 @@
+---
+/** Recognition — three columns: sport, leadership, certifications. */
+import { COPY } from '../data/copy';
+
+const { recognition } = COPY;
+const { sport, leadership, certifications } = recognition;
+---
+
+<section id="recognition" class="rk-section" data-screen-label="Recognition" data-reveal>
+  <div class="rk-split" data-rk-split>
+    <div class="rk-rail" data-rk-rail data-rk-pad>
+      <div class="rk-rail__dev">{recognition.rail.devanagari}</div>
+      <div class="rk-rail__label">{recognition.rail.label}</div>
+    </div>
+
+    <div class="rk-cols" data-rk-cols>
+      <div class="rk-col" data-rk-pad>
+        <div class="rk-col__kicker rk-col__kicker--acc">{sport.heading}</div>
+        <div class="rk-col__title">
+          {sport.titleLines[0]}<br />{sport.titleLines[1]}
+        </div>
+        <div class="rk-col__body">{sport.body}</div>
+      </div>
+
+      <div class="rk-col" data-rk-pad>
+        <div class="rk-col__kicker">{leadership.heading}</div>
+        <ul class="rk-col__list">
+          {leadership.items.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+
+      <div class="rk-col" data-rk-pad>
+        <div class="rk-col__kicker">{certifications.heading}</div>
+        <div class="rk-certs">
+          {
+            certifications.items.map((cert) => (
+              <div class="rk-certs__row">
+                <span>{cert.name}</span>
+                <span class="rk-certs__date">{cert.date}</span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

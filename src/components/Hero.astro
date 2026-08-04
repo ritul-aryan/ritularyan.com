@@ -1,0 +1,74 @@
+---
+/**
+ * Hero. Static in step 3.
+ *
+ * The typewriter line renders its first line as plain text; HeroTypewriter
+ * (step 7) takes over and rotates all six. The ask box renders but does nothing
+ * until AskIndex (step 6). The retrieval answer panel is step 6 and is not here
+ * yet — the prototype keeps it at height 0 until a query runs.
+ */
+import { COPY } from '../data/copy';
+import { FACT_COUNT } from '../data/facts';
+import { SUGGESTIONS } from '../data/search';
+
+const { hero } = COPY;
+---
+
+<section class="rk-hero" data-rk-hero data-screen-label="Hero">
+  <div class="rk-hero__inner">
+    <div class="rk-eyebrow">
+      <span class="rk-eyebrow__dot"></span>
+      <span>{hero.role}</span>
+      <span class="rk-eyebrow__sep">{hero.separator}</span>
+      <span>{hero.location}</span>
+    </div>
+
+    <h1 class="rk-hero__name" data-glyphs="line" data-par="-0.10">
+      {hero.nameLines[0]}<br />{hero.nameLines[1]}
+    </h1>
+
+    <div class="rk-hero__sub">
+      <div class="rk-hero__dev">{hero.devanagari}</div>
+      <p class="rk-hero__lede">{hero.lede}</p>
+    </div>
+
+    <div class="rk-typeline" data-rk-type>
+      <span class="rk-typeline__caret-mark">▸</span>
+      <span class="rk-typeline__text" data-typewriter>{hero.typewriterLines[0]}</span>
+      <span class="rk-typeline__cursor"></span>
+    </div>
+
+    <div class="rk-ask">
+      <div class="rk-ask__label">
+        <span class="rk-ask__bullet">{hero.askBullet}</span>
+        <span>{hero.askBefore} {FACT_COUNT} {hero.askAfter}</span>
+      </div>
+
+      <div class="rk-ask__box" data-rk-ask>
+        <span class="rk-ask__sigil">{hero.askPrompt}</span>
+        <input
+          class="rk-ask__input"
+          type="text"
+          placeholder={SUGGESTIONS[0]}
+          aria-label="Ask the index"
+        />
+        <button class="rk-ask__submit" type="button" data-cursor>{hero.retrieve}</button>
+      </div>
+
+      <div class="rk-chips">
+        {
+          SUGGESTIONS.map((label) => (
+            <button class="rk-chip" type="button" data-rk-chip data-cursor>
+              {label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="rk-scrollhint">
+    <span class="rk-scrollhint__rule"></span>
+    <span>{hero.scrollHint}</span>
+  </div>
+</section>

@@ -1,0 +1,76 @@
+---
+/**
+ * About.
+ *
+ * The 230px 4:5 frame is preserved exactly — a photo drops into it later with no
+ * re-layout (CLAUDE.md). It holds an instrument readout built only from copy that
+ * already exists in the prototype: the location, and the IST clock. The
+ * coordinates appear exactly once, in the caption below the frame, because that
+ * is where the design fixes them.
+ *
+ * The centred registration mark occupies the space the photo will fill, so the
+ * cell reads as reserved rather than empty.
+ *
+ * The IST value is the prototype's own "--:--" placeholder until the clock script
+ * drives it from the same source as the header.
+ */
+import { COPY } from '../data/copy';
+
+const { about, hero } = COPY;
+---
+
+<section id="about" class="rk-section" data-screen-label="About" data-reveal>
+  <div class="rk-split" data-rk-split>
+    <div class="rk-rail" data-rk-rail data-rk-pad>
+      <div class="rk-rail__dev">{about.rail.devanagari}</div>
+      <div class="rk-rail__label">{about.rail.label}</div>
+    </div>
+
+    <div class="rk-about__body" data-rk-pad>
+      <div class="rk-about__figure" data-rk-portrait>
+        <div class="rk-about__frame">
+          <div class="rk-readout">
+            <span class="rk-readout__tick rk-readout__tick--tl-h"></span>
+            <span class="rk-readout__tick rk-readout__tick--tl-v"></span>
+            <span class="rk-readout__tick rk-readout__tick--br-h"></span>
+            <span class="rk-readout__tick rk-readout__tick--br-v"></span>
+
+            <div class="rk-readout__place">{hero.location}</div>
+
+            <div class="rk-readout__mark" aria-hidden="true">
+              <span></span><span></span>
+            </div>
+
+            <div class="rk-readout__zone">
+              <span>IST</span>
+              <span class="rk-readout__zone-time" data-clock-ist>--:--</span>
+            </div>
+          </div>
+        </div>
+        <div class="rk-about__coords">{about.coordinates}</div>
+      </div>
+
+      <div class="rk-about__prose">
+        <p class="rk-about__lead">{about.paragraphs[0]}</p>
+        <p class="rk-about__p">{about.paragraphs[1]}</p>
+        <p class="rk-about__p">{about.paragraphs[2]}</p>
+
+        <div class="rk-linkrow">
+          {
+            about.links.map((link) => (
+              <a
+                href={link.href}
+                data-cursor
+                {...(link.href.startsWith('http')
+                  ? { target: '_blank', rel: 'noreferrer' }
+                  : {})}
+              >
+                {link.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

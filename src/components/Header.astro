@@ -1,0 +1,74 @@
+---
+/**
+ * The fixed header bar. Rendered on both / and /fast, matching the prototype,
+ * where this block sits outside both <sc-if> branches.
+ *
+ * Approved deviation 2: the highlighted mode button reflects the actual route.
+ * The prototype hardcodes FULL as active regardless of mode.
+ *
+ * NOTE: the nav's WORK entry points at #projects, not #work. That is the
+ * prototype's deliberate choice, settled — see CLAUDE.md.
+ *
+ * The clock face and theme toggle are driven by the inline scripts in
+ * BaseLayout. The clock's expandable panel arrives with LiveClock.
+ */
+import { COPY } from '../data/copy';
+
+interface Props {
+  /** Which route this header is on. Drives the FULL/FAST active state. */
+  mode: 'full' | 'fast';
+}
+
+const { mode } = Astro.props;
+const { header } = COPY;
+const isFull = mode === 'full';
+---
+
+<div class="rk-bar">
+  <div class="rk-bar__row">
+    <a href={isFull ? '#top' : '/'} class="rk-brand" data-mark data-cursor>
+      <span class="rk-brand__glyph">
+        <span></span><span></span><span></span><span></span>
+      </span>
+      <span class="rk-brand__name">{header.brand}</span>
+    </a>
+
+    <div class="rk-nav" data-rk-hide>
+      {header.nav.map((link) => <a href={link.href} data-cursor>{link.label}</a>)}
+    </div>
+
+    <div class="rk-bar__spacer"></div>
+
+    <button class="rk-bar__btn" data-rk-hide data-cursor title="Expand the clock" type="button">
+      <span class="rk-clock__face" data-clock>{header.clockPlaceholder}</span>
+      <span class="rk-clock__caret">▼</span>
+    </button>
+
+    <button
+      class="rk-theme-btn"
+      data-rk-btn
+      data-cursor
+      data-theme-toggle
+      title="Switch theme"
+      type="button"
+    >
+      <span class="rk-theme-btn__dot"></span>
+      <span data-theme-label>LIGHT</span>
+    </button>
+
+    <div class="rk-modes">
+      <a
+        href="/"
+        class:list={['rk-mode', { 'rk-mode--active': isFull }]}
+        data-rk-btn
+        data-cursor>{header.modeFull}</a
+      >
+      <a
+        href="/fast"
+        class:list={['rk-mode', { 'rk-mode--active': !isFull }]}
+        data-rk-btn
+        data-cursor>{header.modeFast}</a
+      >
+    </div>
+  </div>
+</div>
