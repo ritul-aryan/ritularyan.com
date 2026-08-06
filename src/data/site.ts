@@ -18,5 +18,9 @@ export const SITE = {
   twitterDescription: 'Agentic systems, multi-agent orchestration, LLM applications.',
 
   /** Live origin. Nothing else should hardcode the domain. */
-  origin: 'https://ritularyan.com',
+  // origin: 'https://ritularyan.com',
+
+  // TEMPORARY: domain not registered yet. Switch to https://ritularyan.com
+  // when DNS resolves — this drives canonical, og:url and og:image.
+  origin: 'https://ritularyan-com.vercel.app',
 } as const;
