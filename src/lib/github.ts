@@ -43,6 +43,20 @@ const titleise = (name: string): string =>
 export async function fetchProjects(): Promise<Feed> {
   const seedFeed: Feed = { projects: SEED, status: COPY.projects.seedFeedStatus };
 
+  /**
+   * Deterministic escape hatch. Set RK_SKIP_GITHUB=1 to build against SEED only.
+   *
+   * Needed for two things: an offline or air-gapped build, and any pixel
+   * comparison against deploy/. The prototype fetches this feed in the browser,
+   * where CORS blocks it, so the prototype always renders the 9 SEED entries —
+   * while a live build renders however many repos are tagged. Comparing the two
+   * without this flag measures the feed, not the layout.
+   */
+  if (process.env.RK_SKIP_GITHUB === '1') {
+    console.log('[github] RK_SKIP_GITHUB=1 — using SEED, no network call');
+    return seedFeed;
+  }
+
   let res: Response;
   try {
     res = await fetch(ENDPOINT, {

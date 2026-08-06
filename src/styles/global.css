@@ -61,6 +61,53 @@ input:focus {
   opacity: 0.7;
 }
 
+/* ----------------------------------------------------------- scrollbar ---- */
+/* Approved deviation 5 — a NEW design addition, not fidelity. The prototype has
+ * zero scrollbar styling; this was requested deliberately.
+ *
+ * Pure CSS, so it costs /fast nothing. Every colour is a theme token, never a
+ * hex, so light and dark both work with no extra rules. Square, thin, transparent
+ * track, thumb in the line token, accent on hover.
+ *
+ * `scrollbar-gutter: stable` is deliberately NOT set — see CLAUDE.md; it would
+ * reserve the scrollbar's width permanently and shift every width measurement. */
+
+/* Firefox, and any engine implementing the standard properties. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rk-line) transparent;
+}
+
+/* WebKit / Blink. `::-webkit-scrollbar` needs an explicit size or it keeps the
+ * platform default. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--rk-line);
+  border-radius: 0;
+  transition: background 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--rk-acc);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* NOTE: Firefox exposes no thumb-hover selector — `scrollbar-color` is set on the
+ * container and there is no `::-moz-scrollbar-thumb:hover`. So the accent-on-hover
+ * is WebKit/Blink only. Faking it with `html:hover` would turn the thumb accent
+ * whenever the pointer is anywhere on the page, which is worse than not having it. */
+
 /* ------------------------------------------------------------ keyframes ---- */
 
 @keyframes rk-sheen {
@@ -131,6 +178,17 @@ input:focus {
 
 /* ---------------------------------------------------------------- root ---- */
 
+/* Approved deviation 4 — `clip`, not `hidden`.
+ *
+ * The prototype had `overflow-x: hidden` here alongside `min-height: 100vh`. Per
+ * spec, when one axis is not `visible` the other computes to `auto`, so
+ * overflow-y became auto and .rk-root turned into a second scroll container on
+ * top of the document's — two scrollbars. Measured before the fix: computed
+ * overflow-y: auto, docScrolls AND rootScrolls both true on /.
+ *
+ * `clip` does not trigger that coercion and creates no scroll container, so the
+ * horizontal clipping is kept and the inner scrollbar goes away. No overflow
+ * rules on html or body. */
 .rk-root {
   position: relative;
   min-height: 100vh;
@@ -138,7 +196,7 @@ input:focus {
   color: var(--rk-ink);
   font-family: var(--rk-font-sans);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
   transition:
     background-color 0.45s ease,
     color 0.45s ease;
@@ -246,15 +304,6 @@ input:focus {
 
 .rk-bar__btn:hover {
   color: var(--rk-ink);
-}
-
-/* On /fast the clock is plain text, not an expandable button. */
-.rk-bar__btn--static {
-  cursor: default;
-}
-
-.rk-bar__btn--static:hover {
-  color: var(--rk-dim);
 }
 
 .rk-clock__face {

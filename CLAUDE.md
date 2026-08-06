@@ -100,9 +100,13 @@ inline `window.__astro_dev_toolbar__` blob that are absent from the build.
 
 ## Approved deviations from the prototype
 
-There are exactly **three**, all **explicitly approved by Ritul**. Do **not**
+There are exactly **five**, all **explicitly approved by Ritul**. Do **not**
 revert them as "fidelity violations". This register is exhaustive — any departure
 from the prototype not listed here is a bug. Everything else stays exact.
+
+Deviations 1-4 are **bug fixes**: the prototype's behaviour has no coherent
+intentional reading. Deviation 5 is a **new design addition**, requested
+deliberately, and is not a fidelity matter at all.
 
 ### 1. `/fast` sections get `id` attributes the prototype lacks
 
@@ -158,6 +162,71 @@ font. Tiro is already loaded for Devanagari elsewhere, so this makes rendering
 deterministic rather than OS-dependent.
 
 **Do NOT widen the fallback to any other stack.** Only the mono stack.
+
+### 4. `.rk-root` uses `overflow-x: clip`, not `hidden` — fixes a double scrollbar
+
+**Prototype behaviour:** the root wrapper carried `min-height:100vh` together with
+`overflow-x:hidden`. Per CSS spec, when one axis is not `visible` the other
+computes to `auto` — so `overflow-y` became `auto` and `.rk-root` turned into a
+second scroll container stacked on the document's. Two scrollbars.
+
+Measured before the fix, at 1440px and 390px on `/`:
+computed `overflow-y: auto`, and **both** `docScrolls` and `rootScrolls` true.
+
+It was invisible in Claude Design's constrained preview panel, which is why it
+survived into the export.
+
+**What we do instead:** `overflow-x: clip`. `clip` does not trigger the coercion
+and creates no scroll container, so horizontal clipping is preserved and the inner
+scrollbar disappears. **No overflow rules on `html` or `body`** — that would be a
+different fix with different side effects.
+
+Measured after: `overflow-y: visible`, `rootScrolls: false`, exactly **one**
+scrollbar on both routes at both widths, no horizontal overflow at 390px.
+
+`clip` does **not** disturb anything that reads document scroll. Verified after
+the change: H1Parallax still tracks scroll, ScrollProgress reaches 100% at the
+true bottom, RevealOnScroll reaches opacity 1, the fixed canvas stays pinned at
+0,0 at full viewport size and is **not** clipped, and the fixed header stays at
+`top: 0`.
+
+### 5. A custom scrollbar — a NEW design addition, not fidelity
+
+**The prototype has zero scrollbar styling.** This is not a bug fix and not a
+port; Ritul requested it deliberately (2026-08-06). Do not remove it as
+"something the prototype doesn't have" — that is the point.
+
+Rules live in `src/styles/global.css` under the `scrollbar` heading. Constraints
+it must keep:
+
+- **Pure CSS.** Nothing about this may add a script to `/fast`.
+- **Tokens, never hex.** `--rk-line` for the thumb, `--rk-acc` on hover,
+  transparent track. Verified in both themes: dark resolves to
+  `rgba(243,241,235,0.13)`, light to `rgba(20,19,26,0.15)`.
+- Square — `border-radius: 0`, matching the design language. Thin.
+- Both `::-webkit-scrollbar*` **and** Firefox's `scrollbar-width` /
+  `scrollbar-color`, so it is not Chrome-only.
+- Applies to both routes.
+
+Known limitation: Firefox exposes no thumb-hover selector, so **accent-on-hover
+is WebKit/Blink only**. Faking it with `html:hover` would turn the thumb accent
+whenever the pointer is anywhere on the page, which is worse than not having it.
+
+### `scrollbar-gutter: stable` — considered, deliberately NOT set
+
+It reserves the scrollbar's width permanently, whether or not the page scrolls.
+Measured: adding it reduced `documentElement.scrollWidth` from 1440 to **1430**,
+a real 10px change to a width measurement.
+
+It only earns that cost on pages that toggle between scrolling and not scrolling.
+Both routes **always** scroll at every tested width — `/` is 5744px at 1440 and
+10527px at 390; `/fast` is 1800px and 3023px, against a 900px viewport. So there
+is no layout shift to prevent, and the gutter would just narrow the page and shift
+every width-based measurement, including the side-by-side baselines and the
+responsive breakpoints.
+
+**If a future change can make either route short enough not to scroll, revisit
+this** — that is the condition under which it becomes worth the 10px.
 
 ## Considered and rejected — do not re-raise
 
