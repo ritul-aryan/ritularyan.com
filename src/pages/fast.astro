@@ -18,12 +18,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import { COPY } from '../data/copy';
 import { SEED } from '../data/projects';
+import { SITE } from '../data/site';
 
 const { fast, meta } = COPY;
 const [akin, ethara] = fast.experience.jobs;
 ---
 
-<BaseLayout title={meta.title}>
+<BaseLayout title={meta.title} description={SITE.description} path="/fast">
   <Header mode="fast" />
 
   <div id="top" class="rk-fast">

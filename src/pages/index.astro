@@ -29,9 +29,10 @@ import Footer from '../components/Footer.astro';
 import IntroLoader from '../components/IntroLoader.astro';
 import CanvasField from '../components/islands/CanvasField.tsx';
 import { COPY } from '../data/copy';
+import { SITE } from '../data/site';
 ---
 
-<BaseLayout title={COPY.meta.title}>
+<BaseLayout title={COPY.meta.title} description={SITE.description} path="/">
   <IntroLoader />
 
   <CanvasField client:load />

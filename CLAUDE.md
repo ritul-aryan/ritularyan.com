@@ -237,25 +237,23 @@ design: photo in frame, coordinates as caption.
 zero-JS requirement on `/fast`. Do not add either package at any point, and do
 not enable Web Analytics or Speed Insights in the Vercel dashboard.
 
-### `public/robots.txt` is deliberate — do not remove before step 8
+### `public/robots.txt` — the crawl block has been lifted
 
-```
-User-agent: *
-Disallow: /
-```
+It held `Disallow: /` while the site was half-built, because the production Vercel
+deployment is publicly reachable and does **not** get an automatic `noindex` —
+only preview deployments do. As of 2026-08-06 the site is complete and the domain
+is attached, so it is now `Allow: /`.
 
-The production Vercel deployment is publicly reachable and does **not** get an
-automatic `noindex` — only preview deployments do. This file exists to keep a
-half-built site out of search indexes. It is replaced with a real `robots.txt`
-at step 8, when the domain goes live. **Removing or relaxing it before then is a
-mistake, not a cleanup.**
+There is deliberately **no `Sitemap:` line**: no sitemap is generated, and
+pointing crawlers at a 404 is worse than omitting it. Adding one means either a
+hand-written `public/sitemap.xml` or `@astrojs/sitemap` — a new dependency, so
+ask first.
 
-### The custom domain is not connected yet
+### The custom domain
 
-`ritularyan.com` is deliberately **not** connected until there is real content.
-Do not reference the custom domain in any config, `<link rel="canonical">`,
-`og:url`, or sitemap until Ritul says it is live. All canonical/OG URL work
-belongs to step 8.
+`ritularyan.com` is attached. `canonical`, `og:url` and the OG image URL are
+built from a single origin constant in `src/data/site.ts` — nothing else should
+hardcode the domain.
 
 ## Environment notes
 

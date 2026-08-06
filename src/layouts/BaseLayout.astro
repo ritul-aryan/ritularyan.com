@@ -28,12 +28,24 @@ import '@fontsource/tiro-devanagari-hindi/400.css';
 
 import '../styles/tokens.css';
 import '../styles/global.css';
+import { SITE } from '../data/site';
 
 interface Props {
   title: string;
+  description: string;
+  /** Path only, e.g. "/" or "/fast". Combined with the canonical origin. */
+  path: string;
 }
 
-const { title } = Astro.props;
+const { title, description, path } = Astro.props;
+
+/**
+ * The prototype's head block used three DIFFERENT descriptions — a long one for
+ * meta, a mid-length og:description mentioning the index, and a short
+ * twitter:description. Reproduced rather than collapsed into one string.
+ */
+const canonical = new URL(path, SITE.origin).href;
+const ogImage = new URL('/og.png', SITE.origin).href;
 ---
 
 <!doctype html>
@@ -43,6 +55,26 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={SITE.ogDescription} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={SITE.twitterDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <meta name="theme-color" content="#08080B" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F2EFE8" media="(prefers-color-scheme: light)" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     {/* Theme, applied before first paint so there is no wrong-theme flash. Reads
         the same `rk-theme` key the prototype used. No attribute means dark, which
