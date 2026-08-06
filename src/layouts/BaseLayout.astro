@@ -2,23 +2,19 @@
 /**
  * Base document shell for both routes.
  *
- * Fonts are self-hosted via @fontsource — there are no requests to
- * fonts.googleapis.com or fonts.gstatic.com. Bricolage Grotesque comes from
- * opsz.css rather than index.css because the prototype requested
- * `opsz,wght@12..96` and index.css ships the wght axis only; opsz.css carries
- * both axes in one file, so `font-optical-sizing: auto` behaves as designed on
- * the 182px H1.
+ * Fonts are self-hosted via @fontsource — no requests to fonts.googleapis.com or
+ * fonts.gstatic.com. Bricolage Grotesque comes from opsz.css rather than
+ * index.css: the prototype requested `opsz,wght@12..96` and index.css ships the
+ * wght axis only, while opsz.css carries both, so font-optical-sizing behaves as
+ * designed on the 182px H1.
  *
- * Devanagari coverage is verified, not assumed — see scripts/verify-fonts.mjs.
+ * Devanagari coverage is verified, not assumed — scripts/verify-fonts.mjs.
  *
- * SCRIPTS: the two `is:inline` blocks below are the only JS on /fast. They are
- * inline by design, not by accident — no external file, no extra request, no
- * framework, no hydration. See CLAUDE.md, "/fast route". Everything else that
- * moves is an island and loads only on /.
- *
- * Full metadata (canonical, OG, Twitter, favicon, theme-color) is the final
- * commit. The custom domain must not appear anywhere until Ritul confirms it is
- * live.
+ * SCRIPTS: the two `is:inline` blocks below are the ONLY JavaScript on /fast.
+ * They are inline by design — no external file, no extra request, no framework,
+ * no hydration — and they cover ThemeToggle and LiveClock, both of which have to
+ * work on both routes. Everything else that moves is loaded from
+ * src/pages/index.astro alone and can never reach /fast.
  */
 import '@fontsource-variable/bricolage-grotesque/opsz.css';
 import '@fontsource/ibm-plex-sans/400.css';
@@ -45,11 +41,12 @@ const { title } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>{title}</title>
 
-    {/* Theme, applied before first paint so there is no wrong-theme flash.
-        Reads the same `rk-theme` key the prototype used. Absent attribute means
-        dark, which is the prototype's unconditional default. */}
+    {/* Theme, applied before first paint so there is no wrong-theme flash. Reads
+        the same `rk-theme` key the prototype used. No attribute means dark, which
+        is the prototype's unconditional default. */}
     <script is:inline>
       (function () {
         try {
@@ -64,17 +61,19 @@ const { title } = Astro.props;
       <slot />
     </div>
 
-    {/* Theme toggle and clock face. Kept inline so /fast has no dead controls
-        and pulls no external script. Timings match the prototype: the face
-        ticks every 1000ms and alternates between Delhi and UTC every 5200ms. */}
+    {/* ThemeToggle + LiveClock. Inline so /fast has no dead controls and pulls no
+        external script. Timings are the prototype's: the face ticks every 1000ms
+        and alternates Delhi/UTC every 5200ms. */}
     <script is:inline>
       (function () {
         var root = document.documentElement;
         var pad = function (n) {
           return String(n).padStart(2, '0');
         };
+        var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-        /* --- theme --- */
+        /* --- ThemeToggle --- */
         var label = document.querySelector('[data-theme-label]');
         var setLabel = function () {
           if (label) label.textContent = root.dataset.theme === 'light' ? 'DARK' : 'LIGHT';
@@ -92,41 +91,79 @@ const { title } = Astro.props;
           });
         }
 
-        /* --- clock --- */
+        /* --- LiveClock --- */
         var face = document.querySelector('[data-clock]');
         var panelTime = document.querySelector('[data-clock-ist]');
-        if (!face && !panelTime) return;
+        var panel = document.querySelector('[data-clock-panel]');
+        var grid = document.querySelector('[data-clock-grid]');
+        var caret = document.querySelector('[data-clock-caret]');
+        var clockBtn = document.querySelector('[data-clock-toggle]');
         var which = 0;
+        var open = false;
+        var panelTimer = null;
+
+        var istOf = function (now) {
+          return new Date(now.getTime() + (330 + now.getTimezoneOffset()) * 60000);
+        };
+
         var tick = function () {
           var now = new Date();
-          var ist = new Date(now.getTime() + (330 + now.getTimezoneOffset()) * 60000);
+          var ist = istOf(now);
           if (face) {
             face.textContent =
               which % 2 === 0
-                ? 'DELHI · ' +
-                  pad(ist.getHours()) +
-                  ':' +
-                  pad(ist.getMinutes()) +
-                  ':' +
-                  pad(ist.getSeconds()) +
-                  ' IST'
-                : 'UTC · ' +
-                  pad(now.getUTCHours()) +
-                  ':' +
-                  pad(now.getUTCMinutes()) +
-                  ':' +
-                  pad(now.getUTCSeconds());
+                ? 'DELHI · ' + pad(ist.getHours()) + ':' + pad(ist.getMinutes()) + ':' + pad(ist.getSeconds()) + ' IST'
+                : 'UTC · ' + pad(now.getUTCHours()) + ':' + pad(now.getUTCMinutes()) + ':' + pad(now.getUTCSeconds());
           }
-          if (panelTime) {
-            panelTime.textContent = pad(ist.getHours()) + ':' + pad(ist.getMinutes());
-          }
+          if (panelTime) panelTime.textContent = pad(ist.getHours()) + ':' + pad(ist.getMinutes());
         };
-        tick();
-        setInterval(tick, 1000);
-        setInterval(function () {
-          which++;
+
+        var renderPanel = function () {
+          if (!grid) return;
+          var now = new Date();
+          var ist = istOf(now);
+          var rows = [
+            ['DELHI NCR · IST (UTC+5:30) · WHERE I AM', pad(ist.getHours()) + ':' + pad(ist.getMinutes()) + ':' + pad(ist.getSeconds())],
+            ['UTC · COORDINATED UNIVERSAL', pad(now.getUTCHours()) + ':' + pad(now.getUTCMinutes()) + ':' + pad(now.getUTCSeconds())],
+            ['TODAY', DAYS[ist.getDay()] + ' ' + pad(ist.getDate()) + ' ' + MONTHS[ist.getMonth()] + ' ' + ist.getFullYear()],
+          ];
+          if (grid.children.length !== rows.length) {
+            grid.innerHTML = rows
+              .map(function () {
+                return '<div class="rk-clockpanel__cell"><div class="rk-clockpanel__k"></div><div class="rk-clockpanel__v"></div></div>';
+              })
+              .join('');
+          }
+          Array.prototype.forEach.call(grid.children, function (cell, i) {
+            cell.querySelector('.rk-clockpanel__k').textContent = rows[i][0];
+            cell.querySelector('.rk-clockpanel__v').textContent = rows[i][1];
+          });
+        };
+
+        if (clockBtn && panel) {
+          clockBtn.addEventListener('click', function () {
+            open = !open;
+            clockBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (caret) caret.textContent = open ? '▲' : '▼';
+            if (open) {
+              renderPanel();
+              panel.style.height = panel.firstElementChild.offsetHeight + 'px';
+              panelTimer = setInterval(renderPanel, 400);
+            } else {
+              panel.style.height = '0px';
+              if (panelTimer) clearInterval(panelTimer);
+            }
+          });
+        }
+
+        if (face || panelTime) {
           tick();
-        }, 5200);
+          setInterval(tick, 1000);
+          setInterval(function () {
+            which++;
+            tick();
+          }, 5200);
+        }
       })();
     </script>
   </body>

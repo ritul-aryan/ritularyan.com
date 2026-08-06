@@ -2,8 +2,16 @@
 /**
  * `/` — the full experience.
  *
- * Step 3: static shell. No interactivity, no islands, no canvas, no loader.
- * Those arrive in steps 5-7 and are the only things that get JS.
+ * Two React islands (CanvasField, AskIndex) plus the behaviours bundle. The
+ * bundle is imported here and nowhere else, so /fast can never pick it up.
+ *
+ * The IntroLoader markup sits FIRST deliberately. It is a position:fixed overlay,
+ * so document order has no bearing on what covers what — but it does decide tab
+ * order, and CLAUDE.md requires SKIP to be reachable by Tab. Rendered last, SKIP
+ * fell behind every header and content link and was unreachable in practice
+ * (measured: still not focused after 13 presses). First in the body makes it the
+ * first tab stop, which is what a modal overlay should be. Every section remains
+ * in the DOM either way.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
@@ -18,10 +26,27 @@ import Stack from '../components/Stack.astro';
 import Recognition from '../components/Recognition.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
+import IntroLoader from '../components/IntroLoader.astro';
+import CanvasField from '../components/islands/CanvasField.tsx';
 import { COPY } from '../data/copy';
 ---
 
 <BaseLayout title={COPY.meta.title}>
+  <IntroLoader />
+
+  <CanvasField client:load />
+
+  {/* ScrollProgress rail */}
+  <div class="rk-progress" data-progress aria-hidden="true"></div>
+
+  {/* CustomCursor. Hidden unless (hover:hover) and (pointer:fine) — see CLAUDE.md,
+      and do not widen that scope. */}
+  <div class="rk-cursor-ring" data-cursor-ring aria-hidden="true">
+    <span data-cursor-fill></span>
+  </div>
+  <div class="rk-cursor-dot" data-cursor-dot aria-hidden="true"></div>
+  <div class="rk-cursor-label" data-cursor-label aria-hidden="true"></div>
+
   <Header mode="full" />
 
   <div id="top" class="rk-page">
@@ -38,3 +63,9 @@ import { COPY } from '../data/copy';
     <Footer />
   </div>
 </BaseLayout>
+
+<script>
+  import { boot } from '../scripts/behaviours';
+  import { COPY } from '../data/copy';
+  boot(COPY.hero.typewriterLines);
+</script>

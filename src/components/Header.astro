@@ -1,7 +1,8 @@
 ---
 /**
- * The fixed header bar. Rendered on both / and /fast, matching the prototype,
- * where this block sits outside both <sc-if> branches.
+ * The fixed header bar. Rendered identically on / and /fast — the prototype puts
+ * this block outside both <sc-if> branches, so the only permitted difference is
+ * which mode button is active.
  *
  * Approved deviation 2: the highlighted mode button reflects the actual route.
  * The prototype hardcodes FULL as active regardless of mode.
@@ -9,10 +10,9 @@
  * NOTE: the nav's WORK entry points at #projects, not #work. That is the
  * prototype's deliberate choice, settled — see CLAUDE.md.
  *
- * The clock face and theme toggle are driven by the inline scripts in
- * BaseLayout, so neither is a dead control on /fast. The clock's expandable
- * panel is a `/`-only affordance and arrives with LiveClock; on /fast the clock
- * renders as plain text rather than a button that would do nothing.
+ * The clock face, its expandable panel and the theme toggle are all driven by the
+ * sanctioned inline scripts in BaseLayout, so every control here works on /fast
+ * too without pulling an external script.
  */
 import { COPY } from '../data/copy';
 
@@ -41,22 +41,18 @@ const isFull = mode === 'full';
 
     <div class="rk-bar__spacer"></div>
 
-    {
-      isFull ? (
-        <button class="rk-bar__btn" data-rk-hide data-cursor title="Expand the clock" type="button">
-          <span class="rk-clock__face" data-clock>
-            {header.clockPlaceholder}
-          </span>
-          <span class="rk-clock__caret">▼</span>
-        </button>
-      ) : (
-        <span class="rk-bar__btn rk-bar__btn--static" data-rk-hide>
-          <span class="rk-clock__face" data-clock>
-            {header.clockPlaceholder}
-          </span>
-        </span>
-      )
-    }
+    <button
+      class="rk-bar__btn"
+      data-rk-hide
+      data-cursor
+      data-clock-toggle
+      title="Expand the clock"
+      type="button"
+      aria-expanded="false"
+    >
+      <span class="rk-clock__face" data-clock>{header.clockPlaceholder}</span>
+      <span class="rk-clock__caret" data-clock-caret>▼</span>
+    </button>
 
     <button
       class="rk-theme-btn"
@@ -84,5 +80,9 @@ const isFull = mode === 'full';
         data-cursor>{header.modeFast}</a
       >
     </div>
+  </div>
+
+  <div class="rk-clockpanel" data-clock-panel>
+    <div class="rk-clockpanel__grid" data-clock-grid></div>
   </div>
 </div>

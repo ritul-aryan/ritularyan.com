@@ -2,16 +2,17 @@
 /**
  * Projects.
  *
- * Step 3 renders the 9 SEED entries. Step 7 replaces the source with a
- * build-time GitHub fetch, keeping SEED as the fallback so the build never
- * breaks when GitHub is down.
+ * The feed is fetched at BUILD time and baked into static HTML — visitors make
+ * no request to api.github.com. SEED is the fallback and the build never fails
+ * because GitHub is unreachable; see src/lib/github.ts.
  *
  * data-skills carries the space-separated filter keys StackFilter matches on.
  */
 import { COPY } from '../data/copy';
-import { SEED } from '../data/projects';
+import { fetchProjects } from '../lib/github';
 
 const { projects } = COPY;
+const feed = await fetchProjects();
 ---
 
 <section id="projects" class="rk-section" data-screen-label="Projects" data-reveal>
@@ -22,12 +23,13 @@ const { projects } = COPY;
       <div class="rk-rail__note">
         {projects.blurbBefore} <em>{projects.blurbTopic}</em> {projects.blurbAfter}
       </div>
-      <div class="rk-rail__status">{projects.seedFeedStatus}</div>
+      <div class="rk-rail__status">{feed.status}</div>
+      <div class="rk-rail__filter" data-filter-badge></div>
     </div>
 
     <div class="rk-grid" data-rk-grid>
       {
-        SEED.map((project, i) => (
+        feed.projects.map((project, i) => (
           <a
             class="rk-card"
             href={project.url}

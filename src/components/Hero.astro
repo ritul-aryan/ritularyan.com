@@ -1,15 +1,13 @@
 ---
 /**
- * Hero. Static in step 3.
+ * Hero.
  *
- * The typewriter line renders its first line as plain text; HeroTypewriter
- * (step 7) takes over and rotates all six. The ask box renders but does nothing
- * until AskIndex (step 6). The retrieval answer panel is step 6 and is not here
- * yet — the prototype keeps it at height 0 until a query runs.
+ * The retrieval UI is the AskIndex island; everything else here is static markup.
+ * The typewriter line renders its first line server-side so it reads correctly
+ * before hydration and under reduced motion — HeroTypewriter then rotates all six.
  */
 import { COPY } from '../data/copy';
-import { FACT_COUNT } from '../data/facts';
-import { SUGGESTIONS } from '../data/search';
+import AskIndex from './islands/AskIndex.tsx';
 
 const { hero } = COPY;
 ---
@@ -38,33 +36,7 @@ const { hero } = COPY;
       <span class="rk-typeline__cursor"></span>
     </div>
 
-    <div class="rk-ask">
-      <div class="rk-ask__label">
-        <span class="rk-ask__bullet">{hero.askBullet}</span>
-        <span>{hero.askBefore} {FACT_COUNT} {hero.askAfter}</span>
-      </div>
-
-      <div class="rk-ask__box" data-rk-ask>
-        <span class="rk-ask__sigil">{hero.askPrompt}</span>
-        <input
-          class="rk-ask__input"
-          type="text"
-          placeholder={SUGGESTIONS[0]}
-          aria-label="Ask the index"
-        />
-        <button class="rk-ask__submit" type="button" data-cursor>{hero.retrieve}</button>
-      </div>
-
-      <div class="rk-chips">
-        {
-          SUGGESTIONS.map((label) => (
-            <button class="rk-chip" type="button" data-rk-chip data-cursor>
-              {label}
-            </button>
-          ))
-        }
-      </div>
-    </div>
+    <AskIndex client:load />
   </div>
 
   <div class="rk-scrollhint">

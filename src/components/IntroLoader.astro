@@ -1,0 +1,48 @@
+---
+/**
+ * IntroLoader — the FULL vs FAST decision point.
+ *
+ * Read the CLAUDE.md entry before changing anything here. This is functional,
+ * not decorative: it is the one moment a visitor on weak hardware or a poor
+ * connection is offered the light path.
+ *
+ * Three properties it must keep, and how they are achieved:
+ *
+ * 1. SKIP is clickable on the FIRST FRAME, keyboard-focusable and Tab-reachable.
+ *    It is server-rendered markup and a real <a href="/fast">, so it works
+ *    before any JS parses — and still works if JS never runs at all.
+ *
+ * 2. Overlay only. It is position:fixed, so it covers the page without removing
+ *    anything: every section stays in the DOM and nothing is gated on the loader
+ *    finishing. It renders first in the body purely so SKIP is the first tab
+ *    stop — document order does not affect what covers what here.
+ *
+ * 3. It cannot trap anyone. The dismissal is a CSS animation, not a JS timer:
+ *    even with the behaviours bundle blocked or broken, the overlay fades itself
+ *    out after 1.7s (350ms under prefers-reduced-motion, matching the
+ *    prototype's `dur = reduce ? 350 : 1700`). JS only adds the warp canvas, the
+ *    bar, the counter and the glyph reveal on top.
+ */
+import { COPY } from '../data/copy';
+
+const { loader } = COPY;
+---
+
+<div class="rk-loader" data-loader role="dialog" aria-label="Loading — skip to the plain text version">
+  <canvas class="rk-loader__warp" data-loader-warp aria-hidden="true"></canvas>
+
+  <div class="rk-loader__inner">
+    <div class="rk-loader__name" data-loader-name>{loader.name}</div>
+
+    <div class="rk-loader__track">
+      <div class="rk-loader__bar" data-loader-bar></div>
+    </div>
+
+    <div class="rk-loader__meta">
+      <span class="rk-loader__ticker" data-loader-ticker>{loader.tickerStart}</span>
+      <span class="rk-loader__count" data-loader-count>{loader.countZero}</span>
+    </div>
+
+    <a class="rk-loader__skip" href="/fast" data-loader-skip>{loader.skip}</a>
+  </div>
+</div>
