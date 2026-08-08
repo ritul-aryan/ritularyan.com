@@ -52,7 +52,7 @@ export async function fetchProjects(): Promise<Feed> {
    * while a live build renders however many repos are tagged. Comparing the two
    * without this flag measures the feed, not the layout.
    */
-  if (process.env.RK_SKIP_GITHUB === '1') {
+  if (import.meta.env.RK_SKIP_GITHUB === '1') {
     console.log('[github] RK_SKIP_GITHUB=1 — using SEED, no network call');
     return seedFeed;
   }

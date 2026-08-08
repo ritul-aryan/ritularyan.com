@@ -10,7 +10,8 @@
     "check": "astro check",
     "verify:content": "node --experimental-strip-types scripts/verify-content.mjs",
     "verify:fonts": "node scripts/verify-fonts.mjs",
-    "gen:tokens": "node scripts/gen-tokens.mjs"
+    "gen:tokens": "node scripts/gen-tokens.mjs",
+    "verify:config": "node scripts/verify-config.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.2",
