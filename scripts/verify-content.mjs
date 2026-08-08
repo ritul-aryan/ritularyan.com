@@ -9,14 +9,42 @@
 //
 // Exits non-zero on any mismatch.
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const here = dirname(fileURLToPath(import.meta.url));
 import { FACTS, FACT_COUNT } from '../src/data/facts.ts';
 import { SEED, GH, repo } from '../src/data/projects.ts';
 import { STOP, STOP_WORDS, SUGGESTIONS } from '../src/data/search.ts';
 import { COPY } from '../src/data/copy.ts';
 
-const SRC =
-  process.argv[2] ?? '/mnt/user-data/uploads/portfolio/deploy/index.html';
+/**
+ * The prototype lives OUTSIDE the repo — deploy/ is a read-only reference
+ * folder, not a tracked path — so the source has to be located rather than
+ * assumed. Checked in order, first hit wins.
+ *
+ * This is also why verify:content is NOT in prebuild: on a deploy host the
+ * reference simply is not there, and a build must not fail for that.
+ */
+const CANDIDATES = [
+  process.argv[2],
+  resolve(here, '../../deploy/index.html'), // repo sits beside deploy/
+  resolve(here, '../deploy/index.html'),
+  '/mnt/user-data/uploads/portfolio/deploy/index.html',
+].filter(Boolean);
+
+const SRC = CANDIDATES.find((p) => p && existsSync(p));
+
+if (!SRC) {
+  console.log('Could not find the prototype to verify against. Tried:');
+  CANDIDATES.forEach((p) => console.log('  ' + p));
+  console.log('');
+  console.log('Pass it explicitly:  npm run verify:content -- path/to/deploy/index.html');
+  console.log('');
+  console.log('RESULT: FAIL — nothing was verified.');
+  process.exit(1);
+}
 
 const raw = readFileSync(SRC, 'utf8');
 

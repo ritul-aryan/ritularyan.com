@@ -5,13 +5,15 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node scripts/verify-config.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
     "verify:content": "node --experimental-strip-types scripts/verify-content.mjs",
     "verify:fonts": "node scripts/verify-fonts.mjs",
     "gen:tokens": "node scripts/gen-tokens.mjs",
-    "verify:config": "node scripts/verify-config.mjs"
+    "verify:config": "node scripts/verify-config.mjs",
+    "verify": "npm run verify:config && npm run verify:fonts && npm run verify:content"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.2",

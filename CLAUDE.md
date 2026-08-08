@@ -100,11 +100,11 @@ inline `window.__astro_dev_toolbar__` blob that are absent from the build.
 
 ## Approved deviations from the prototype
 
-There are exactly **five**, all **explicitly approved by Ritul**. Do **not**
+There are exactly **six**, all **explicitly approved by Ritul**. Do **not**
 revert them as "fidelity violations". This register is exhaustive — any departure
 from the prototype not listed here is a bug. Everything else stays exact.
 
-Deviations 1-4 are **bug fixes**: the prototype's behaviour has no coherent
+Deviations 1-4 and 6 are **bug fixes**: the prototype's behaviour has no coherent
 intentional reading. Deviation 5 is a **new design addition**, requested
 deliberately, and is not a fidelity matter at all.
 
@@ -228,6 +228,25 @@ responsive breakpoints.
 **If a future change can make either route short enough not to scroll, revisit
 this** — that is the condition under which it becomes worth the 10px.
 
+### 6. `html` is themed from `--rk-bg`
+
+**Prototype behaviour:** `html { background:#08080B }` is hardcoded at
+`deploy/index.html:30` and never themed. `applyTheme` only sets CSS variables on
+`document.documentElement` and assigns `document.body.style.background` — both
+verified. So in light theme `html` stays `rgb(8,8,11)` while body and root go
+light, and a black band leaks below the hero.
+
+Measured at 1440px in light theme: prototype `html` computed
+`rgb(8, 8, 11)` against a `--rk-bg` of `#F2EFE8`. It accounted for essentially
+all of a 4.087% hero difference.
+
+**What we do instead:** `tokens.css` themes `html` from `--rk-bg`, so it follows
+the theme like everything else.
+
+**Reason** (Ritul, 2026-08-06): "hardcode dark on html so the light theme leaks a
+black band" has no coherent intentional reading, so it fails the same test the
+FULL/FAST bug failed.
+
 ## Considered and rejected — do not re-raise
 
 These look like prototype bugs but are settled. Re-opening them wastes a round
@@ -317,11 +336,45 @@ the documented exception — npm explicitly supports `"//"` as a comment key.
 `astro build` passed on every one of those broken deployments. The build never
 reads `vercel.json`. **Verifying the build is not verifying the config.**
 
-`npm run verify:config` exists for this. It hard-fails on comment-shaped keys
-anywhere in a schema-validated file, and additionally validates against the live
-schema when the schema host is reachable — the fetch is best effort and degrades
-to a vendored top-level property list rather than failing a build for being
-offline. Run it before shipping any config change.
+`npm run verify:config` exists for this, and it is wired to **`prebuild`**, so
+npm runs it automatically before every `build` — locally and on Vercel. A bad
+config now fails with a clear message naming the offending key, instead of
+Vercel's schema error after the fact. Verified: with a `"//"` key present, `npm
+run build` exits 1 and `astro build` never runs.
+
+It hard-fails on comment-shaped keys anywhere in a schema-validated file, and
+additionally validates against the live schema when the host is reachable — the
+fetch is best effort and degrades to a vendored top-level property list rather
+than failing a build for being offline. Verified in that state: the host returns
+403 from the build container, prebuild prints a NOTICE and exits 0, and the build
+proceeds.
+
+**`vercel.json` must keep `"buildCommand": "npm run build"`.** It previously said
+`astro build`, which Vercel runs as a shell command — that bypasses npm lifecycle
+scripts entirely, so `prebuild` would never have fired on Vercel. Setting a
+buildCommand that is not an npm script silently disables every guard hanging off
+`prebuild`.
+
+### What belongs in `prebuild`, and what does not
+
+Only `verify:config`. The test is whether the failure mode is **invisible locally
+and fatal remotely** — that is the gap a deploy-time guard closes.
+
+- **`verify:config` — yes.** A green local build says nothing about it, and the
+  failure only surfaces on the platform. ~335ms against a ~2.6s build.
+- **`verify:content` — no, and it cannot be.** `deploy/` is a reference folder
+  outside the repo; `git ls-files` matches **zero** paths under it. On a deploy
+  host the prototype simply is not present, so the script would either fail every
+  deploy or pass without checking anything. It also needs
+  `--experimental-strip-types`, which is Node-version dependent. It is a guard for
+  the authoring machine.
+- **`verify:fonts` — safe but low value there.** It is self-contained (reads
+  `node_modules/@fontsource` and `src/data`) and would run fine on Vercel at
+  ~194ms. But it fails the same way locally as remotely, so it catches nothing a
+  local run would miss. Add it only for belt-and-braces against a partial
+  `npm install`.
+
+`npm run verify` runs all three for local and CI use.
 
 Confirmed against the real failure: with the two `"//"` keys restored,
 `verify:config` exits 1 and names both, while `npm run build` still reports
