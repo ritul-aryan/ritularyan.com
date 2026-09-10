@@ -82,7 +82,7 @@ export const SEED: readonly Project[] = [
     name: "DDoS Traffic Analysis",
     description: "Classifying malicious traffic patterns from network capture features.",
     tags: "Scikit-learn · Pandas",
-    badge: "IN PROGRESS",
+    badge: "AI · CYBERSECURITY",
     skills: "sklearn pandas numpy python",
     url: repo("ddos"),
   },
