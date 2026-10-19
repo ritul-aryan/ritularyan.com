@@ -1223,6 +1223,17 @@ html {
   padding-top: 9px;
 }
 
+/* Language, last push and stars, from GitHub at build time. */
+.rk-card__meta {
+  margin-top: -3px;
+  font-family: var(--rk-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rk-dim);
+  opacity: 0.75;
+}
+
 /* --------------------------------------------------------------- stack ---- */
 
 .rk-stack {

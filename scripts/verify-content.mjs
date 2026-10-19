@@ -10,8 +10,8 @@
 //   - no placeholder text (TODO, TBD, FIXME, lorem ipsum);
 //   - every fact belongs to a known section, every section has at least one
 //     fact, fact titles are unique, and FACT_COUNT equals the index length;
-//   - project names are unique, and every project link is a real URL or an
-//     anchor to a real section;
+//   - curated project names and repo names are unique; public entries name a
+//     plausible repo, private entries (no repo) point at a real section;
 //   - every in-page link (#...) points at a section id that exists;
 //   - each stat's displayed value equals its count-up target plus suffix;
 //   - every skill key used by a project card or a chip exists in the Stack
@@ -21,7 +21,7 @@
 // it runs the same on any machine.
 
 import { FACTS, FACT_COUNT } from '../src/data/facts.ts';
-import { SEED } from '../src/data/projects.ts';
+import { CURATED } from '../src/data/projects.ts';
 import { STOP, STOP_WORDS, SUGGESTIONS } from '../src/data/search.ts';
 import { COPY } from '../src/data/copy.ts';
 import { SITE } from '../src/data/site.ts';
@@ -62,7 +62,7 @@ function walk(node, path, key = '') {
   if (typeof node === 'object') for (const [k, v] of Object.entries(node)) walk(v, `${path}.${k}`, k);
 }
 walk(FACTS, 'FACTS');
-walk(SEED, 'SEED');
+walk(CURATED, 'CURATED');
 walk(SUGGESTIONS, 'SUGGESTIONS');
 walk(COPY, 'COPY');
 walk(SITE, 'SITE');
@@ -101,11 +101,21 @@ for (const s of SECTIONS) check(bySection[s] > 0, `no fact in section "${s}"`);
 
 // ---- projects ---------------------------------------------------------------
 const names = new Set();
-SEED.forEach((p, i) => {
+const repos = new Set();
+CURATED.forEach((p, i) => {
+  const at = `CURATED[${i}] "${p.name}"`;
   const n = p.name.toLowerCase();
-  check(!names.has(n), `SEED[${i}]: duplicate project name "${p.name}"`);
+  check(!names.has(n), `${at}: duplicate project name`);
   names.add(n);
-  checkHref(p.url, `SEED[${i}].url`);
+  if (p.repo) {
+    check(/^[A-Za-z0-9._-]+$/.test(p.repo), `${at}: "${p.repo}" is not a valid repo name`);
+    check(!repos.has(p.repo.toLowerCase()), `${at}: repo "${p.repo}" listed twice`);
+    repos.add(p.repo.toLowerCase());
+    check(p.anchor === undefined, `${at}: a public repo entry must not set an anchor`);
+  } else {
+    check(typeof p.anchor === 'string', `${at}: private entry (no repo) needs an anchor`);
+    if (typeof p.anchor === 'string') checkHref(p.anchor, `${at}.anchor`);
+  }
 });
 
 // ---- stats ------------------------------------------------------------------
@@ -118,8 +128,8 @@ const { languages, agentic, dataVision, platform } = COPY.stack.groups;
 const stackKeys = [...languages.bars, ...agentic.chips, ...dataVision.chips, ...platform.chips].map((c) => c.key);
 const stackSet = new Set(stackKeys);
 check(stackSet.size === stackKeys.length, `Stack has duplicate skill keys: ${stackKeys.filter((k, i) => stackKeys.indexOf(k) !== i).join(', ')}`);
-SEED.forEach((p, i) => {
-  for (const k of p.skills.split(' ')) check(stackSet.has(k), `SEED[${i}] "${p.name}": skill "${k}" is not in the Stack section`);
+CURATED.forEach((p, i) => {
+  for (const k of p.skills.split(' ')) check(stackSet.has(k), `CURATED[${i}] "${p.name}": skill "${k}" is not in the Stack section`);
 });
 COPY.now.chips.forEach((c, i) => check(stackSet.has(c.key), `COPY.now.chips[${i}]: key "${c.key}" is not in the Stack section`));
 COPY.patent.chips.forEach((c, i) => {
@@ -133,7 +143,7 @@ check(STOP.size === STOP_WORDS.split(' ').length, 'STOP_WORDS has duplicate word
 
 // ---- report -----------------------------------------------------------------
 console.log(`facts                : ${FACTS.length}  (${SECTIONS.map((s) => `${s} ${bySection[s]}`).join(', ')})`);
-console.log(`projects (SEED)      : ${SEED.length}`);
+console.log(`projects (curated)   : ${CURATED.length}  (${repos.size} public repos, ${CURATED.length - repos.size} private)`);
 console.log(`strings checked      : ${stringsChecked}`);
 console.log(`structural assertions: ${assertions - assertionFailures}/${assertions} passed`);
 console.log('');

@@ -3,13 +3,13 @@
  * Projects.
  *
  * The feed is fetched at BUILD time and baked into static HTML — visitors make
- * no request to api.github.com. SEED is the fallback and the build never fails
- * because GitHub is unreachable; see src/lib/github.ts.
+ * no request to api.github.com. The curated list is the fallback and the build
+ * never fails because GitHub is unreachable; see src/lib/github.ts.
  *
  * data-skills carries the space-separated filter keys StackFilter matches on.
  */
 import { COPY } from '../data/copy';
-import { fetchProjects } from '../lib/github';
+import { fetchProjects, formatDate } from '../lib/github';
 
 const { projects } = COPY;
 const feed = await fetchProjects();
@@ -47,6 +47,17 @@ const feed = await fetchProjects();
             <div class="rk-card__name">{project.name}</div>
             <div class="rk-card__desc">{project.description}</div>
             <div class="rk-card__tags">{project.tags}</div>
+            {(project.language || project.updated) && (
+              <div class="rk-card__meta">
+                {[
+                  project.language,
+                  project.updated && `Updated ${formatDate(project.updated)}`,
+                  project.stars ? `★ ${project.stars}` : '',
+                ]
+                  .filter(Boolean)
+                  .join(' · ')}
+              </div>
+            )}
           </a>
         ))
       }

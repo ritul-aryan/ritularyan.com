@@ -210,8 +210,8 @@ export const COPY = {
     blurbBefore: "This list refreshes itself. It reads my GitHub live and shows only repos I've tagged",
     blurbTopic: "portfolio",
     blurbAfter: "— I curate it by adding a tag, never by editing this page.",
-    /** Shown until the build-time fetch replaces it. */
-    seedFeedStatus: "SEED · 9 ENTRIES",
+    /** Rail status when the build-time GitHub fetch fails or is skipped. */
+    statusOffline: "GITHUB UNREACHABLE AT BUILD · SHOWING CURATED",
   },
 
   stack: {
@@ -239,6 +239,7 @@ export const COPY = {
           { key: "rlhf", label: "RLHF" },
           { key: "embeddings", label: "HuggingFace embeddings" },
           { key: "chromadb", label: "ChromaDB" },
+          { key: "pytorch", label: "PyTorch" },
         ] as readonly SkillChip[],
       },
       dataVision: {
@@ -391,7 +392,7 @@ export const COPY = {
       heading: "## SKILLS",
       lines: [
         "Languages: Python (advanced), TypeScript, JavaScript, SQL, C++",
-        "Agentic/LLM: LangGraph, RAG, LangChain, Ollama, RLHF, HuggingFace embeddings",
+        "Agentic/LLM: LangGraph, RAG, LangChain, Ollama, RLHF, HuggingFace embeddings, PyTorch",
         "Data: Pandas, NumPy, Scikit-learn, Plotly",
         "Vision: OpenCV, MediaPipe",
         "Backend: FastAPI, SQLAlchemy, Alembic, SQLite, ChromaDB",

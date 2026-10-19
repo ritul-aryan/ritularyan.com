@@ -17,11 +17,12 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import { COPY } from '../data/copy';
-import { SEED } from '../data/projects';
+import { fetchProjects } from '../lib/github';
 import { SITE } from '../data/site';
 
 const { fast, meta } = COPY;
 const [akin, ethara] = fast.experience.jobs;
+const feed = await fetchProjects();
 ---
 
 <BaseLayout title={meta.title} description={SITE.description} path="/fast">
@@ -93,7 +94,7 @@ const [akin, ethara] = fast.experience.jobs;
           character of the second span — matching the prototype's structure. */}
       <div class="rk-fast__block">
         {
-          SEED.map((project) => (
+          feed.projects.map((project) => (
             <div class="rk-fast__project">
               <span>{project.name}</span> <span class="rk-fast__meta">— {project.description}</span>
             </div>

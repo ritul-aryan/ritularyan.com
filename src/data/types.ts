@@ -29,7 +29,26 @@ export interface Fact {
   readonly keywords: string;
 }
 
-/** A project card. `url` may be an in-page anchor rather than a repo link. */
+/**
+ * A curated project entry (src/data/projects.ts). `repo` links it to a GitHub
+ * repo; omit it for private work, which then needs an in-page `anchor`.
+ */
+export interface CuratedProject {
+  /** GitHub repo name, matched case-insensitively. Omit for private work. */
+  readonly repo?: string;
+  readonly name: string;
+  readonly description: string;
+  /** Pre-joined display string, e.g. "LangGraph · FastAPI · React/TS". */
+  readonly tags: string;
+  /** Corner badge; empty string renders no badge. */
+  readonly badge: string;
+  /** Space-separated Stack skill keys, matched by StackFilter. */
+  readonly skills: string;
+  /** Private work only: the in-page section the card points at. */
+  readonly anchor?: string;
+}
+
+/** A rendered project card. `url` may be an in-page anchor rather than a repo link. */
 export interface Project {
   readonly name: string;
   readonly description: string;
@@ -42,4 +61,9 @@ export interface Project {
   readonly url: string;
   /** True for work that has no public repo, which changes the hover label. */
   readonly priv?: boolean;
+  /** ISO timestamp of the repo's last push, from GitHub at build time. */
+  readonly updated?: string;
+  /** Primary language reported by GitHub. */
+  readonly language?: string;
+  readonly stars?: number;
 }
