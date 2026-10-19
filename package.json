@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "node scripts/verify-config.mjs",
+    "prebuild": "node scripts/verify-config.mjs && node --experimental-strip-types scripts/verify-content.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
@@ -31,5 +31,8 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "typescript": "^6.0.3"
+  },
+  "engines": {
+    "node": "24.x"
   }
 }

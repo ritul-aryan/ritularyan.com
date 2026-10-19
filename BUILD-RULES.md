@@ -372,15 +372,18 @@ buildCommand that is not an npm script silently disables every guard hanging off
 
 ### What belongs in `prebuild`, and what does not
 
-Only `verify:config`. The test is whether the failure mode is **invisible locally
-and fatal remotely** — that is the gap a deploy-time guard closes.
+`verify:config` and `verify:content`. The test for `verify:config` is whether
+the failure mode is **invisible locally and fatal remotely** — that is the gap
+a deploy-time guard closes. `verify:content` passes a different test: builds now
+run unattended, so a broken data file must stop the deploy rather than ship.
 
 - **`verify:config` — yes.** A green local build says nothing about it, and the
   failure only surfaces on the platform. ~335ms against a ~2.6s build.
-- **`verify:content` — not yet.** Since 2026-10-19 it checks structure and no
-  longer reads `deploy/`, so it could run on Vercel. It is not wired in yet
-  because it needs `--experimental-strip-types`, and Vercel's Node version has
-  not been confirmed. Revisit once the Node version is pinned.
+- **`verify:content` — yes, since 2026-10-19.** It checks structure only and
+  reads nothing outside the repo. It imports the `.ts` data files, which needs
+  type stripping: Node is pinned to `24.x` (`engines` in `package.json`,
+  matching the Vercel project setting), where that is built in. Do not lower
+  the Node version without re-checking this.
 - **`verify:fonts` — safe but low value there.** It is self-contained (reads
   `node_modules/@fontsource` and `src/data`) and would run fine on Vercel at
   ~194ms. But it fails the same way locally as remotely, so it catches nothing a
@@ -466,8 +469,10 @@ and the OG image URL are built from a single origin constant in
 - `prefers-reduced-motion` respected: canvas static, no animation.
 - GitHub projects fetched **at build time** from
   `api.github.com/search/repositories?q=user:ritul-aryan+topic:portfolio`, baked
-  into static HTML, with the SEED list as fallback. The build must never break
-  because GitHub is down.
+  into static HTML, with the curated list in `src/data/projects.ts` as fallback.
+  The build must never break because GitHub is down. The topic decides which
+  repos appear; the curated list decides their wording and order (rules at the
+  top of `projects.ts`).
 - Do NOT port `image-slot.js`, `<image-slot>`, `support.js`, or the design tool's
   dc-runtime. Clean rebuild. No portrait placeholder — a photo is coming later
   and must drop into the About cell's 230px 4:5 frame with no re-layout.
