@@ -7,6 +7,8 @@
  * prototype uses — kept here so the island needs no extra wiring.
  */
 import { COPY } from '../data/copy';
+import { NOW_LOG } from '../data/now';
+import { formatMonth } from '../lib/dates';
 
 const { now } = COPY;
 ---
@@ -19,6 +21,20 @@ const { now } = COPY;
     </div>
 
     <div class="rk-body" data-rk-pad>
+      <div class="rk-nowlog">
+        <div class="rk-nowlog__head">{now.logHeading}</div>
+        <ol class="rk-nowlog__list">
+          {
+            NOW_LOG.map((entry) => (
+              <li class="rk-nowlog__row">
+                <span class="rk-nowlog__date">{formatMonth(entry.month)}</span>
+                <span class="rk-nowlog__text">{entry.text}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
       <div class="rk-now__head">
         <h2 class="rk-now__title">{now.title}</h2>
         <span class="rk-badge">{now.badge}</span>

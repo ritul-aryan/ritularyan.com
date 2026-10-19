@@ -18,6 +18,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import { COPY } from '../data/copy';
 import { fetchProjects } from '../lib/github';
+import { NOW_LOG } from '../data/now';
+import { BUILT_AT } from '../lib/build-info';
+import { formatDate, formatMonth, formatStamp } from '../lib/dates';
 import { SITE } from '../data/site';
 
 const { fast, meta } = COPY;
@@ -61,9 +64,14 @@ const feed = await fetchProjects();
         }
       </div>
 
+      <h2 id="now" class="rk-fast__h">{fast.nowHeading}</h2>
+      <div class="rk-fast__bullets rk-fast__block">
+        {NOW_LOG.map((e, i) => <>{i > 0 && <br />}- {formatMonth(e.month)}: {e.text}</>)}
+      </div>
+
       <h2 id="work" class="rk-fast__h">{fast.experience.heading}</h2>
 
-      <div id="now" class="rk-fast__block">
+      <div class="rk-fast__block">
         <div class="rk-fast__role">
           {akin.title} <span class="rk-fast__meta">{akin.meta}</span>
         </div>
@@ -102,6 +110,20 @@ const feed = await fetchProjects();
         }
       </div>
 
+      {
+        feed.activity.length > 0 && (
+          <div class="rk-fast__bullets rk-fast__block">
+            {fast.activityLabel}{" "}
+            {feed.activity.map((a, i) => (
+              <>
+                {i > 0 && ", "}
+                {a.name} ({formatDate(a.updated)}){i === feed.activity.length - 1 && "."}
+              </>
+            ))}
+          </div>
+        )
+      }
+
       <h2 id="stack" class="rk-fast__h">{fast.skills.heading}</h2>
       <div class="rk-fast__bullets rk-fast__block">
         {fast.skills.lines.map((l, i) => <>{i > 0 && <br />}{l}</>)}
@@ -116,7 +138,10 @@ const feed = await fetchProjects();
       {/* Left as the prototype's plain dim sentence, not a link. Cross-linking
           /fast -> / is already satisfied by the header's FULL button and the
           brand logo, so recolouring this line would be a gratuitous change. */}
-      <div class="rk-fast__foot">{fast.footerNote}</div>
+      <div class="rk-fast__foot">
+        {fast.footerNote}<br />
+        {fast.rebuiltLabel} {formatStamp(BUILT_AT)}.
+      </div>
     </div>
   </div>
 </BaseLayout>

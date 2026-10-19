@@ -92,7 +92,7 @@ export const COPY = {
       "Named inventor on Indian patent 202611015954 A.",
       "Five agents, one pipeline, one audit trail.",
       "Inference stays local. Client data stays put.",
-      "Delhi state champion in Kurash, U-19.",
+      "Delhi state champion in Kurash, Under-19.",
       "BCA in AI & Data Science, expected 2027.",
     ] as readonly string[],
     askBullet: "◆",
@@ -111,7 +111,7 @@ export const COPY = {
     coordinates: "28.61°N 77.21°E",
     paragraphs: [
       "I'm twenty-something, based in Delhi NCR, and most of what I know I learned by building the thing badly first. I'm drawn to problems where a single model isn't enough — where you need several of them checking each other, a retrieval layer that doesn't hallucinate, and an audit trail you can actually defend in a room full of people who didn't write the code.",
-      "Before software I spent years on a mat: I was Delhi state champion in Kurash at U-19. That's where I learned the only useful thing about pressure — you don't rise to the occasion, you fall to the level of your preparation. It's why I over-prepare, why I write tests, and why I'd rather ship something small that holds than something large that doesn't.",
+      "Before software I spent years on a mat: I was Delhi state champion in Kurash at Under-19. That's where I learned the only useful thing about pressure — you don't rise to the occasion, you fall to the level of your preparation. It's why I over-prepare, why I write tests, and why I'd rather ship something small that holds than something large that doesn't.",
       "Currently finishing a BCA in AI & Data Science (2027) while working as a software development intern. I read papers on the metro, I break things on purpose, and I'm looking for people who'd rather argue about architecture than agree about nothing.",
     ] as readonly string[],
     links: [
@@ -131,13 +131,15 @@ export const COPY = {
   now: {
     rail: { devanagari: "अभी", label: "01 / What I'm building" } as RailLabel,
     title: "SAGE",
-    badge: "BUILDING NOW",
+    badge: "PROTOTYPE DELIVERED",
+    /** Heading of the dated log above SAGE (entries live in src/data/now.ts). */
+    logHeading: "Log",
     body: "An agentic analytics platform I pitched to the Board, the Director and the CEO of Akin Pte. Ltd. — and was approved to architect end to end. Five specialised agents run the exploratory-data-analysis pipeline. Every step writes to an audit trail you can replay. Inference stays local on a dual-model router/generator split, so client data never leaves the machine.",
     stats: [
       { value: "5", label: "agents in the pipeline", count: 5, suffix: "" },
       { value: "2", label: "model router / generator", count: 2, suffix: "" },
       { value: "100%", label: "local inference · Ollama", count: 100, suffix: "%" },
-      { value: "3", label: "execs in the room at pitch", count: 3, suffix: "" },
+      { value: "3", label: "executives in the room at the pitch", count: 3, suffix: "" },
     ] as readonly Stat[],
     chips: [
       { key: "langgraph", label: "LangGraph" },
@@ -154,7 +156,7 @@ export const COPY = {
     rail: { devanagari: "कार्य", label: "02 / Experience" } as RailLabel,
     roles: [
       {
-        period: "JUN 2026 → PRESENT",
+        period: "JUNE 2026 → PRESENT",
         org: "Akin Pte. Ltd.",
         meta: "Software Development Intern · AI Tools & Automation · Singapore, remote",
         bullets: [
@@ -164,7 +166,7 @@ export const COPY = {
         ],
       },
       {
-        period: "FEB 2026 → MAY 2026",
+        period: "FEBRUARY 2026 → MAY 2026",
         org: "Ethara AI",
         meta: "LLM Post-Training Intern",
         bullets: [
@@ -196,9 +198,9 @@ export const COPY = {
      * rendered cell, so the break is preserved as data.
      */
     record: [
-      { key: "NO.", lines: ["202611015954 A"] },
-      { key: "FILED", lines: ["12 FEB 2026"] },
-      { key: "PUBLISHED", lines: ["27 MAR 2026"] },
+      { key: "NUMBER", lines: ["202611015954 A"] },
+      { key: "FILED", lines: ["12 FEBRUARY 2026"] },
+      { key: "PUBLISHED", lines: ["27 MARCH 2026"] },
       { key: "JOURNAL", lines: ["13/2026"] },
       { key: "APPLICANT", lines: ["K.R. Mangalam", "University"] },
     ] as readonly { readonly key: string; readonly lines: readonly string[] }[],
@@ -212,6 +214,8 @@ export const COPY = {
     blurbAfter: "— I curate it by adding a tag, never by editing this page.",
     /** Rail status when the build-time GitHub fetch fails or is skipped. */
     statusOffline: "GITHUB UNREACHABLE AT BUILD · SHOWING CURATED",
+    /** Heading of the most-recently-pushed list in the rail. */
+    activityHeading: "Recently active",
   },
 
   stack: {
@@ -279,7 +283,7 @@ export const COPY = {
       heading: "Off the keyboard",
       /** Two lines in the prototype, split with <br>. */
       titleLines: ["State Champion", "Kurash"] as readonly string[],
-      body: "Delhi State School Games, U-19, −81 kg (2022–23). Zonal podiums in Judo alongside it.",
+      body: "Delhi State School Games, Under-19, −81 kg (2022–2023). Zonal podiums in Judo alongside it.",
     },
     leadership: {
       heading: "Leadership",
@@ -291,10 +295,10 @@ export const COPY = {
     certifications: {
       heading: "Certifications",
       items: [
-        { name: "IBM · Big Data, Spark & Scala", date: "JUN 26" },
-        { name: "NASSCOM · Salesforce Catalyst", date: "MAY 25" },
-        { name: "UNESCO MGIEP · Media Literacy", date: "APR 25" },
-        { name: "IBM · Data Analysis with Python", date: "OCT 24" },
+        { name: "IBM · Big Data, Spark & Scala", date: "JUNE 2026" },
+        { name: "NASSCOM · Salesforce Catalyst", date: "MAY 2025" },
+        { name: "UNESCO MGIEP · Media Literacy", date: "APRIL 2025" },
+        { name: "IBM · Data Analysis with Python", date: "OCTOBER 2024" },
       ] as readonly { name: string; date: string }[],
     },
   },
@@ -338,7 +342,10 @@ export const COPY = {
       "Fastest route is email",
     ] as readonly string[],
     bigName: "ऋतुल आर्यन",
-    copyright: "© 2026 Ritul Aryan · Delhi NCR, India · 28.61°N 77.21°E",
+    /** Rendered as "© <build year> " + this. */
+    copyrightHolder: "Ritul Aryan · Delhi NCR, India · 28.61°N 77.21°E",
+    /** Followed by the build time, e.g. "20 October 2026, 06:17 India Standard Time". */
+    rebuiltLabel: "Rebuilt every morning from GitHub. Last rebuilt",
     backToTop: "Back to top",
     backToTopArrow: "↑",
   },
@@ -361,7 +368,7 @@ export const COPY = {
       jobs: [
         {
           title: "Akin Pte. Ltd. — Software Development Intern, AI Tools & Automation",
-          meta: "| Singapore, remote | Jun 2026 – present",
+          meta: "| Singapore, remote | June 2026 – present",
           bullets: [
             "- Pitched SAGE, an agentic analytics platform, to the Board, Director and CEO; approved to architect and build end to end.",
             "- Five-agent EDA pipeline with a full, replayable audit trail.",
@@ -371,7 +378,7 @@ export const COPY = {
         },
         {
           title: "Ethara AI — LLM Post-Training Intern",
-          meta: "| Feb 2026 – May 2026",
+          meta: "| February 2026 – May 2026",
           bullets: [
             "- Promoted Tasker → Quality Reviewer in month one.",
             "- RLHF evaluation; reviewed output from up to 40 contributors.",
@@ -383,7 +390,7 @@ export const COPY = {
       heading: "## PATENT",
       title: "\"An AI Powered Wheeled Omnidirectional Robot\" — Indian Patent Application 202611015954 A",
       bullets: [
-        "- Filed 12 Feb 2026; published 27 Mar 2026 (Journal 13/2026). Applicant: K.R. Mangalam University.",
+        "- Filed 12 February 2026; published 27 March 2026 (Journal 13/2026). Applicant: K.R. Mangalam University.",
         "- Named inventor, 1 of 7. Software lead: sensor fusion, navigation, real-time fall detection (OpenCV/MediaPipe) with a 10-second confirmation loop before emergency escalation.",
       ] as readonly string[],
     },
@@ -402,12 +409,15 @@ export const COPY = {
     },
     certifications: {
       heading: "## CERTIFICATIONS",
-      body: "IBM Big Data/Spark & Scala (Jun 2026) · NASSCOM Salesforce Developer Catalyst (May 2025) · UNESCO MGIEP Media Literacy (Apr 2025) · IBM Data Analysis with Python (Oct 2024)",
+      body: "IBM Big Data/Spark & Scala (June 2026) · NASSCOM Salesforce Developer Catalyst (May 2025) · UNESCO MGIEP Media Literacy (April 2025) · IBM Data Analysis with Python (October 2024)",
     },
     recognition: {
       heading: "## RECOGNITION",
-      body: "Software Lead, 7-member robotics team (Smart India Hackathon internal round) · Team Leader, NAAC accreditation data analysis · State Champion, Kurash — Delhi State School Games U-19 −81 kg (2022–23), plus zonal podiums in Judo.",
+      body: "Software Lead, 7-member robotics team (Smart India Hackathon internal round) · Team Leader, NAAC accreditation data analysis · State Champion, Kurash — Delhi State School Games Under-19 −81 kg (2022–2023), plus zonal podiums in Judo.",
     },
     footerNote: "Switch to FULL in the bar above for the interactive version.",
+    nowHeading: "## NOW",
+    activityLabel: "Recently active:",
+    rebuiltLabel: "Rebuilt every morning from GitHub. Last rebuilt",
   },
 } as const;

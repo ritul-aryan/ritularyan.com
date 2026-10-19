@@ -63,7 +63,7 @@ export const FACTS: readonly Fact[] = [
   {
     section: "work",
     title: "Years of experience",
-    text: "Two AI internships across 2026 — Ethara AI (Feb–May) and Akin Pte. Ltd. (Jun–present) — alongside a BCA in AI & Data Science. Short on years, long on shipped systems.",
+    text: "Two AI internships across 2026 — Ethara AI (February–May) and Akin Pte. Ltd. (June–present) — alongside a BCA in AI & Data Science. Short on years, long on shipped systems.",
     keywords: "experience years how long senior junior level seniority background career",
   },
   {
@@ -243,7 +243,7 @@ export const FACTS: readonly Fact[] = [
   {
     section: "recognition",
     title: "Kurash state champion",
-    text: "Delhi State School Games champion in Kurash, U-19, −81 kg (2022–23), with zonal podiums in Judo. Sport is where I learned that you don't rise to the occasion, you fall to the level of your preparation.",
+    text: "Delhi State School Games champion in Kurash, Under-19, −81 kg (2022–2023), with zonal podiums in Judo. Sport is where I learned that you don't rise to the occasion, you fall to the level of your preparation.",
     keywords: "kurash judo sport champion state medal athlete martial arts wrestling hobby fitness discipline",
   },
   {
@@ -255,7 +255,7 @@ export const FACTS: readonly Fact[] = [
   {
     section: "recognition",
     title: "Certifications",
-    text: "IBM Big Data with Spark & Scala (Jun 2026), NASSCOM Salesforce Developer Catalyst (May 2025), UNESCO MGIEP Media Literacy (Apr 2025), IBM Data Analysis with Python (Oct 2024).",
+    text: "IBM Big Data with Spark & Scala (June 2026), NASSCOM Salesforce Developer Catalyst (May 2025), UNESCO MGIEP Media Literacy (April 2025), IBM Data Analysis with Python (October 2024).",
     keywords: "certifications certificate ibm nasscom unesco courses training credentials spark scala salesforce",
   },
   {

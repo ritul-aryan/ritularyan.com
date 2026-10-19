@@ -102,8 +102,8 @@ const ogImage = new URL('/og.png', SITE.origin).href;
         var pad = function (n) {
           return String(n).padStart(2, '0');
         };
-        var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
         /* --- ThemeToggle --- */
         var label = document.querySelector('[data-theme-label]');
@@ -157,7 +157,7 @@ const ogImage = new URL('/og.png', SITE.origin).href;
           var rows = [
             ['DELHI NCR · IST (UTC+5:30) · WHERE I AM', pad(ist.getHours()) + ':' + pad(ist.getMinutes()) + ':' + pad(ist.getSeconds())],
             ['UTC · COORDINATED UNIVERSAL', pad(now.getUTCHours()) + ':' + pad(now.getUTCMinutes()) + ':' + pad(now.getUTCSeconds())],
-            ['TODAY', DAYS[ist.getDay()] + ' ' + pad(ist.getDate()) + ' ' + MONTHS[ist.getMonth()] + ' ' + ist.getFullYear()],
+            ['TODAY', DAYS[ist.getDay()] + ' ' + ist.getDate() + ' ' + MONTHS[ist.getMonth()] + ' ' + ist.getFullYear()],
           ];
           if (grid.children.length !== rows.length) {
             grid.innerHTML = rows

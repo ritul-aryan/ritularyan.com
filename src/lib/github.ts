@@ -18,6 +18,7 @@
 import { CURATED, GH, USER } from '../data/projects';
 import { COPY } from '../data/copy';
 import type { CuratedProject, Project } from '../data/types';
+import { formatDate } from './dates';
 
 const TOPIC = 'portfolio';
 const ENDPOINT = `https://api.github.com/search/repositories?q=user:${USER}+topic:${TOPIC}&sort=updated&per_page=50`;
@@ -38,10 +39,28 @@ interface Repo {
   private?: boolean;
 }
 
+export interface Activity {
+  readonly name: string;
+  readonly url: string;
+  /** ISO timestamp of the last push. */
+  readonly updated: string;
+}
+
 export interface Feed {
   projects: readonly Project[];
   /** The status line shown in the Projects rail. */
   status: string;
+  /** The three most recently pushed public repos; empty when offline. */
+  activity: readonly Activity[];
+}
+
+/** Most recently pushed public projects first. */
+function recentActivity(projects: readonly Project[]): Activity[] {
+  return projects
+    .filter((p): p is Project & { updated: string } => !p.priv && !!p.updated)
+    .sort((a, b) => b.updated.localeCompare(a.updated))
+    .slice(0, 3)
+    .map((p) => ({ name: p.name, url: p.url, updated: p.updated }));
 }
 
 /** Reads a build-time variable from Astro's env, then the process env. */
@@ -50,15 +69,6 @@ function env(key: string): string | undefined {
   if (typeof fromAstro === 'string' && fromAstro) return fromAstro;
   return (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env?.[key];
 }
-
-/** Display date in India time, e.g. "10 Oct 2026". */
-export const formatDate = (iso: string): string =>
-  new Date(iso).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'Asia/Kolkata',
-  });
 
 /** Title-cases a repo slug for repos with no curated entry. */
 const titleise = (name: string): string =>
@@ -114,6 +124,7 @@ async function load(): Promise<Feed> {
   const curatedOnly: Feed = {
     projects: CURATED.map((c) => fromCurated(c)),
     status: COPY.projects.statusOffline,
+    activity: [],
   };
 
   /**
@@ -193,6 +204,7 @@ async function load(): Promise<Feed> {
   console.log(`[github] ${items.length} tagged: ${used.size} curated, ${extra.length} uncurated`);
   return {
     projects,
-    status: `LIVE · ${items.length} REPOS · SYNCED ${formatDate(new Date().toISOString()).toUpperCase()}`,
+    status: `LIVE · ${items.length} REPOS · SYNCED ${formatDate(new Date()).toUpperCase()}`,
+    activity: recentActivity(projects),
   };
 }

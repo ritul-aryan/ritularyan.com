@@ -48,6 +48,13 @@ export interface CuratedProject {
   readonly anchor?: string;
 }
 
+/** One line of the "Now" log (src/data/now.ts). */
+export interface NowEntry {
+  /** "YYYY-MM". */
+  readonly month: string;
+  readonly text: string;
+}
+
 /** A rendered project card. `url` may be an in-page anchor rather than a repo link. */
 export interface Project {
   readonly name: string;

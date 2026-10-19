@@ -14,6 +14,8 @@
 //     plausible repo, private entries (no repo) point at a real section;
 //   - every in-page link (#...) points at a section id that exists;
 //   - each stat's displayed value equals its count-up target plus suffix;
+//   - the Now log has 1 to 6 entries, months as YYYY-MM, newest first and
+//     none in the future;
 //   - every skill key used by a project card or a chip exists in the Stack
 //     section — otherwise StackFilter could never select it.
 //
@@ -25,6 +27,7 @@ import { CURATED } from '../src/data/projects.ts';
 import { STOP, STOP_WORDS, SUGGESTIONS } from '../src/data/search.ts';
 import { COPY } from '../src/data/copy.ts';
 import { SITE } from '../src/data/site.ts';
+import { NOW_LOG } from '../src/data/now.ts';
 
 const SECTIONS = ['about', 'now', 'work', 'patent', 'projects', 'stack', 'recognition', 'contact'];
 const ANCHORS = new Set([...SECTIONS, 'top']);
@@ -66,6 +69,7 @@ walk(CURATED, 'CURATED');
 walk(SUGGESTIONS, 'SUGGESTIONS');
 walk(COPY, 'COPY');
 walk(SITE, 'SITE');
+walk(NOW_LOG, 'NOW_LOG');
 
 // ---- link helpers -----------------------------------------------------------
 const isUrl = (u) => /^https:\/\/[^\s]+$/.test(u) || /^mailto:[^\s@]+@[^\s@]+\.[^\s@]+$/.test(u) || /^tel:\+?\d+$/.test(u);
@@ -134,6 +138,16 @@ CURATED.forEach((p, i) => {
 COPY.now.chips.forEach((c, i) => check(stackSet.has(c.key), `COPY.now.chips[${i}]: key "${c.key}" is not in the Stack section`));
 COPY.patent.chips.forEach((c, i) => {
   if (c.key) check(stackSet.has(c.key), `COPY.patent.chips[${i}]: key "${c.key}" is not in the Stack section`);
+});
+
+// ---- now log ----------------------------------------------------------------
+const thisMonth = new Date().toISOString().slice(0, 7);
+check(NOW_LOG.length >= 1 && NOW_LOG.length <= 6, `NOW_LOG has ${NOW_LOG.length} entries; keep 1 to 6`);
+NOW_LOG.forEach((e, i) => {
+  const ok = /^\d{4}-(0[1-9]|1[0-2])$/.test(e.month);
+  check(ok, `NOW_LOG[${i}]: month "${e.month}" is not YYYY-MM`);
+  if (ok) check(e.month <= thisMonth, `NOW_LOG[${i}]: month ${e.month} is in the future`);
+  if (i > 0) check(NOW_LOG[i - 1].month >= e.month, `NOW_LOG[${i}]: entries must be newest first`);
 });
 
 // ---- search config ----------------------------------------------------------

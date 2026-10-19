@@ -560,6 +560,35 @@ function stackFilter(): void {
   });
 }
 
+/* --------------------------------------------------------- RelativeTimes ---- */
+/* Live-data addition, deviation 7 — not in the prototype. Every [data-rel] holds
+ * an ISO timestamp; this fills it with " · 9 days ago" and keeps it current.
+ * The full date beside it is server-rendered, so nothing depends on this. */
+
+function relativeTimes(): void {
+  const els = Array.from(document.querySelectorAll<HTMLElement>('[data-rel]'));
+  if (!els.length || typeof Intl === 'undefined' || !('RelativeTimeFormat' in Intl)) return;
+  const rtf = new Intl.RelativeTimeFormat('en-GB', { numeric: 'auto' });
+  const phrase = (ms: number): string => {
+    const s = ms / 1000;
+    const a = Math.abs(s);
+    if (a < 3600) return rtf.format(Math.round(s / 60), 'minute');
+    if (a < 86400) return rtf.format(Math.round(s / 3600), 'hour');
+    if (a < 86400 * 30) return rtf.format(Math.round(s / 86400), 'day');
+    if (a < 86400 * 365) return rtf.format(Math.round(s / (86400 * 30.44)), 'month');
+    return rtf.format(Math.round(s / (86400 * 365.25)), 'year');
+  };
+  const render = () => {
+    const now = Date.now();
+    for (const el of els) {
+      const t = Date.parse(el.dataset.rel ?? '');
+      if (!Number.isNaN(t)) el.textContent = ' · ' + phrase(t - now);
+    }
+  };
+  render();
+  window.setInterval(render, 60_000);
+}
+
 /* ------------------------------------------------------------------- boot ---- */
 
 export function boot(typewriterLines: readonly string[]): void {
@@ -567,6 +596,7 @@ export function boot(typewriterLines: readonly string[]): void {
   customCursor();
   heroTypewriter(typewriterLines);
   scrollDriven();
+  relativeTimes();
   // The prototype defers these by 60ms so first paint is not competing.
   window.setTimeout(() => {
     splitGlyphs();

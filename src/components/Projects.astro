@@ -9,7 +9,8 @@
  * data-skills carries the space-separated filter keys StackFilter matches on.
  */
 import { COPY } from '../data/copy';
-import { fetchProjects, formatDate } from '../lib/github';
+import { fetchProjects } from '../lib/github';
+import { formatDate } from '../lib/dates';
 
 const { projects } = COPY;
 const feed = await fetchProjects();
@@ -24,6 +25,22 @@ const feed = await fetchProjects();
         {projects.blurbBefore} <em>{projects.blurbTopic}</em> {projects.blurbAfter}
       </div>
       <div class="rk-rail__status">{feed.status}</div>
+      {
+        feed.activity.length > 0 && (
+          <div class="rk-activity">
+            <div class="rk-activity__head">{projects.activityHeading}</div>
+            {feed.activity.map((a) => (
+              <a class="rk-activity__row" href={a.url} target="_blank" rel="noreferrer" data-cursor>
+                <span class="rk-activity__name">{a.name}</span>
+                <span class="rk-activity__when">
+                  {formatDate(a.updated)}
+                  <span data-rel={a.updated} />
+                </span>
+              </a>
+            ))}
+          </div>
+        )
+      }
       <div class="rk-rail__filter" data-filter-badge></div>
     </div>
 
@@ -55,7 +72,12 @@ const feed = await fetchProjects();
                   project.stars ? `★ ${project.stars}` : '',
                 ]
                   .filter(Boolean)
-                  .join(' · ')}
+                  .map((item, i) => (
+                    <Fragment>
+                      {i > 0 && <span class="rk-card__meta-sep"> · </span>}
+                      <span class="rk-card__meta-item">{item}</span>
+                    </Fragment>
+                  ))}
               </div>
             )}
           </a>
