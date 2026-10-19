@@ -1,7 +1,7 @@
-// AUTO-EXTRACTED from deploy/index.html. Do not hand-edit.
-// The retrieval index: 44 facts.
-// Source of truth: deploy/index.html (the verified render of the design
-// prototype). Regenerate rather than retype.
+// The retrieval index: the facts the hero search scores and the canvas draws,
+// one point per fact. This file is the source of truth — edit it directly.
+// `npm run verify:content` checks its structure (known sections, every section
+// covered, unique titles, no empty fields).
 
 import type { Fact } from './types';
 
@@ -272,5 +272,5 @@ export const FACTS: readonly Fact[] = [
   },
 ];
 
-/** 44. Rendered in the hero prompt and the footer. */
+/** Rendered in the hero prompt and the footer. */
 export const FACT_COUNT = FACTS.length;

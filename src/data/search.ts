@@ -1,7 +1,5 @@
-// AUTO-EXTRACTED from deploy/index.html. Do not hand-edit.
 // Retrieval configuration: stop words and the hero suggestion chips.
-// Source of truth: deploy/index.html (the verified render of the design
-// prototype). Regenerate rather than retype.
+// This file is the source of truth — edit it directly.
 
 /**
  * Stop words stripped during tokenisation. Kept as one space-separated string

@@ -1,7 +1,6 @@
-// AUTO-EXTRACTED from deploy/index.html. Do not hand-edit.
-// Fallback project list, used when the build-time GitHub fetch yields nothing.
-// Source of truth: deploy/index.html (the verified render of the design
-// prototype). Regenerate rather than retype.
+// Curated project list (SEED). Shown after the live GitHub feed, and on its own
+// when the build-time fetch yields nothing. This file is the source of truth —
+// edit it directly; `npm run verify:content` checks its structure.
 
 import type { Project } from './types';
 

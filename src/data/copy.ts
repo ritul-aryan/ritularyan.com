@@ -1,9 +1,8 @@
-// AUTO-EXTRACTED from deploy/index.html. Do not hand-edit.
 // All display copy, section headings and the /fast page text.
 //
-// Every string here was selected by index from the text nodes of
-// deploy/index.html rather than retyped, and is verified against the source by
-// scripts/verify-content.mjs. Regenerate rather than edit.
+// This file is the source of truth — edit it directly. It began as an exact
+// extraction from the prototype; since 2026-10-19 the wording is owned here.
+// `npm run verify:content` checks its structure, not its wording.
 
 export interface RailLabel {
   /** Devanagari section title shown in the left rail. */

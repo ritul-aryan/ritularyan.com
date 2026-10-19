@@ -16,7 +16,7 @@ design prototype. Deploys to Vercel as static output.
 | Path | Role |
 | --- | --- |
 | `portfolio-design-brief-ritul-aryan/project/Ritul Aryan - Portfolio.dc.html` | design prototype — the VISUAL SPEC |
-| `deploy/` | working verified render — ground truth and CONTENT SOURCE |
+| `deploy/` | original verified render — reference for layout and behaviour only, no longer a content source (see Content) |
 
 ### Line-number offset between the two files
 
@@ -29,13 +29,25 @@ favicon) which exist only in `deploy/index.html`.
 Example: the FULL/FAST buttons are `.dc.html:132` and `deploy/index.html:146`.
 Always state which file a line number refers to.
 
-## Content facts (verified, do not drift)
+## Content — `src/data/` is the source of truth
 
-- The fact index holds exactly **44 facts**: now 6, work 5, patent 3, projects 7,
-  stack 8, about 10, recognition 3, contact 2.
-- The SEED projects array holds exactly **9 entries**.
+Since 2026-10-19 (Ritul's decision) the site's wording no longer has to match
+the prototype. Every word lives in `src/data/*.ts` and is edited there directly.
+The prototype remains the visual and behavioural spec: the approved-deviations
+register below governs layout and behaviour, not wording.
+
+`npm run verify:content` checks structure, not wording: no empty or padded
+strings, no placeholder text, every fact in a known section and every section
+covered, unique fact titles and project names, `FACT_COUNT` equal to the index
+length, stat values consistent with their count-up targets, in-page links
+pointing at real section ids, and every skill key used by a project or chip
+present in the Stack section (otherwise StackFilter could never select it).
+
+Fixed regardless of content:
+
 - Colour tokens: `--rk-acc` `#FF4A1C`, `--rk-acc2` `#7CE7FF`, bg `#08080B`.
-- Devanagari `ऋतुल आर्यन` must render correctly — verify the font subset covers it.
+- Devanagari `ऋतुल आर्यन` must render correctly — `verify:fonts` checks that the
+  font subsets cover every Devanagari codepoint used in `src/data`.
 
 ## Islands — all 15 behaviours must survive with identical timing, easing and feel
 
@@ -102,7 +114,8 @@ inline `window.__astro_dev_toolbar__` blob that are absent from the build.
 
 There are exactly **six**, all **explicitly approved by Ritul**. Do **not**
 revert them as "fidelity violations". This register is exhaustive — any departure
-from the prototype not listed here is a bug. Everything else stays exact.
+from the prototype's layout or behaviour not listed here is a bug. Everything
+else stays exact. Wording is not covered here — see Content above.
 
 Deviations 1-4 and 6 are **bug fixes**: the prototype's behaviour has no coherent
 intentional reading. Deviation 5 is a **new design addition**, requested
@@ -364,12 +377,10 @@ and fatal remotely** — that is the gap a deploy-time guard closes.
 
 - **`verify:config` — yes.** A green local build says nothing about it, and the
   failure only surfaces on the platform. ~335ms against a ~2.6s build.
-- **`verify:content` — no, and it cannot be.** `deploy/` is a reference folder
-  outside the repo; `git ls-files` matches **zero** paths under it. On a deploy
-  host the prototype simply is not present, so the script would either fail every
-  deploy or pass without checking anything. It also needs
-  `--experimental-strip-types`, which is Node-version dependent. It is a guard for
-  the authoring machine.
+- **`verify:content` — not yet.** Since 2026-10-19 it checks structure and no
+  longer reads `deploy/`, so it could run on Vercel. It is not wired in yet
+  because it needs `--experimental-strip-types`, and Vercel's Node version has
+  not been confirmed. Revisit once the Node version is pinned.
 - **`verify:fonts` — safe but low value there.** It is self-contained (reads
   `node_modules/@fontsource` and `src/data`) and would run fine on Vercel at
   ~194ms. But it fails the same way locally as remotely, so it catches nothing a

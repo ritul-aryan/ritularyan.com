@@ -1,201 +1,148 @@
-// Verifies every extracted string appears verbatim in the source prototype.
+// Checks the STRUCTURE of the site's content, not its wording.
 //
-// The data files under src/data are generated from deploy/index.html. This
-// script is the guard: it walks every string in every data file and asserts it
-// is a verbatim substring of the source, with HTML entities decoded. A single
-// wrong apostrophe, en dash or curly quote fails the run.
+//   node --experimental-strip-types scripts/verify-content.mjs
 //
-//   node scripts/verify-content.mjs [path/to/deploy/index.html]
+// The files under src/data are the source of truth for every word on the site
+// and are edited directly. This script guards the shape those edits must keep,
+// so a typo in a data file fails here instead of quietly breaking the page:
 //
-// Exits non-zero on any mismatch.
+//   - no empty strings, and none with stray leading/trailing whitespace;
+//   - no placeholder text (TODO, TBD, FIXME, lorem ipsum);
+//   - every fact belongs to a known section, every section has at least one
+//     fact, fact titles are unique, and FACT_COUNT equals the index length;
+//   - project names are unique, and every project link is a real URL or an
+//     anchor to a real section;
+//   - every in-page link (#...) points at a section id that exists;
+//   - each stat's displayed value equals its count-up target plus suffix;
+//   - every skill key used by a project card or a chip exists in the Stack
+//     section — otherwise StackFilter could never select it.
+//
+// Exits non-zero on any failure. Needs no network and no reference folder, so
+// it runs the same on any machine.
 
-import { readFileSync, existsSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const here = dirname(fileURLToPath(import.meta.url));
 import { FACTS, FACT_COUNT } from '../src/data/facts.ts';
-import { SEED, GH, repo } from '../src/data/projects.ts';
+import { SEED } from '../src/data/projects.ts';
 import { STOP, STOP_WORDS, SUGGESTIONS } from '../src/data/search.ts';
 import { COPY } from '../src/data/copy.ts';
+import { SITE } from '../src/data/site.ts';
 
-/**
- * The prototype lives OUTSIDE the repo — deploy/ is a read-only reference
- * folder, not a tracked path — so the source has to be located rather than
- * assumed. Checked in order, first hit wins.
- *
- * This is also why verify:content is NOT in prebuild: on a deploy host the
- * reference simply is not there, and a build must not fail for that.
- */
-const CANDIDATES = [
-  process.argv[2],
-  resolve(here, '../../deploy/index.html'), // repo sits beside deploy/
-  resolve(here, '../deploy/index.html'),
-  '/mnt/user-data/uploads/portfolio/deploy/index.html',
-].filter(Boolean);
-
-const SRC = CANDIDATES.find((p) => p && existsSync(p));
-
-if (!SRC) {
-  console.log('Could not find the prototype to verify against. Tried:');
-  CANDIDATES.forEach((p) => console.log('  ' + p));
-  console.log('');
-  console.log('Pass it explicitly:  npm run verify:content -- path/to/deploy/index.html');
-  console.log('');
-  console.log('RESULT: FAIL — nothing was verified.');
-  process.exit(1);
-}
-
-const raw = readFileSync(SRC, 'utf8');
-
-// Decode the entities the prototype actually uses, then normalise the <br> and
-// tag boundaries that split a logical string across nodes.
-const decoded = raw
-  .replaceAll('&amp;', '&')
-  .replaceAll('&nbsp;', ' ')
-  .replaceAll('&quot;', '"')
-  .replaceAll('&#2315;', 'ऋ')
-  .replaceAll('&lt;', '<')
-  .replaceAll('&gt;', '>');
-
-// A second haystack with tags stripped, so strings the prototype splits across
-// <br> or <span> boundaries still match as continuous text.
-const stripped = decoded.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
-
-// A third haystack with JS string escapes undone. Facts live inside JS literals
-// in the script block, so an embedded quote is stored as \" — the extracted
-// value holds a real quote and would otherwise look like a mismatch.
-const unescaped = decoded.replaceAll('\\"', '"').replaceAll("\\'", "'");
+const SECTIONS = ['about', 'now', 'work', 'patent', 'projects', 'stack', 'recognition', 'contact'];
+const ANCHORS = new Set([...SECTIONS, 'top']);
+const PLACEHOLDER = /\b(TODO|TBD|FIXME|lorem ipsum)\b/i;
+/** Fields where an empty string is meaningful: no badge, no stat suffix. */
+const MAY_BE_EMPTY = new Set(['badge', 'suffix']);
 
 const failures = [];
-const checked = { strings: 0, skipped: 0 };
-
-// Structural values that are ours, not the prototype's copy: URLs assembled by
-// repo(), hrefs, and numeric/boolean fields.
-const STRUCTURAL = /^(https?:|mailto:|tel:|#|\/)/;
-
-function check(path, value) {
-  if (typeof value === 'number' || typeof value === 'boolean') return;
-  if (typeof value !== 'string') return;
-  if (!value.trim()) return;
-  if (STRUCTURAL.test(value)) {
-    checked.skipped++;
-    return;
+const fail = (msg) => failures.push(msg);
+let stringsChecked = 0;
+let assertions = 0;
+let assertionFailures = 0;
+const check = (ok, msg) => {
+  assertions++;
+  if (!ok) {
+    assertionFailures++;
+    fail(msg);
   }
-  checked.strings++;
-  const needle = value.replace(/\s+/g, ' ').trim();
-  if (
-    decoded.includes(value) ||
-    stripped.includes(needle) ||
-    unescaped.includes(value)
-  )
-    return;
-  failures.push({ path, value });
-}
+};
 
-function walk(node, path) {
+// ---- every string: non-empty, trimmed, no placeholders ---------------------
+function walk(node, path, key = '') {
   if (node === null || node === undefined) return;
-  if (Array.isArray(node)) {
-    node.forEach((v, i) => walk(v, `${path}[${i}]`));
+  if (typeof node === 'string') {
+    stringsChecked++;
+    if (!node.trim()) {
+      if (!(node === '' && MAY_BE_EMPTY.has(key))) fail(`${path}: empty string`);
+    }
+    else if (node !== node.trim()) fail(`${path}: leading/trailing whitespace ${JSON.stringify(node.slice(0, 40))}`);
+    if (PLACEHOLDER.test(node)) fail(`${path}: placeholder text ${JSON.stringify(node.slice(0, 60))}`);
     return;
   }
-  if (node instanceof Set) {
-    // Stop words are single tokens from one source literal, checked via STOP_WORDS.
-    return;
-  }
-  if (typeof node === 'object') {
-    for (const [k, v] of Object.entries(node)) walk(v, `${path}.${k}`);
-    return;
-  }
-  check(path, node);
+  if (Array.isArray(node)) return node.forEach((v, i) => walk(v, `${path}[${i}]`));
+  if (node instanceof Set) return;
+  if (typeof node === 'object') for (const [k, v] of Object.entries(node)) walk(v, `${path}.${k}`, k);
 }
-
 walk(FACTS, 'FACTS');
 walk(SEED, 'SEED');
 walk(SUGGESTIONS, 'SUGGESTIONS');
 walk(COPY, 'COPY');
-check('STOP_WORDS', STOP_WORDS);
+walk(SITE, 'SITE');
 
-// ---- structural assertions -------------------------------------------------
-const asserts = [];
-const eq = (label, actual, expected) => {
-  asserts.push({ label, actual, expected, ok: actual === expected });
-};
-
-eq('FACTS length', FACTS.length, 44);
-eq('FACT_COUNT', FACT_COUNT, 44);
-eq('SEED length', SEED.length, 9);
-eq('SUGGESTIONS length', SUGGESTIONS.length, 6);
-eq('STOP size', STOP.size, 62);
-eq('GH', GH, 'https://github.com/ritul-aryan');
-eq('typewriter lines', COPY.hero.typewriterLines.length, 6);
-eq('nav links', COPY.header.nav.length, 5);
-eq('about paragraphs', COPY.about.paragraphs.length, 3);
-eq('now stats', COPY.now.stats.length, 4);
-eq('now chips', COPY.now.chips.length, 6);
-eq('work roles', COPY.work.roles.length, 2);
-eq('patent record rows', COPY.patent.record.length, 5);
-eq('patent chips', COPY.patent.chips.length, 4);
-eq('skill bars', COPY.stack.groups.languages.bars.length, 4);
-eq('agentic chips', COPY.stack.groups.agentic.chips.length, 7);
-eq('dataVision chips', COPY.stack.groups.dataVision.chips.length, 6);
-eq('platform chips', COPY.stack.groups.platform.chips.length, 12);
-eq('certifications', COPY.recognition.certifications.items.length, 4);
-eq('footer index links', COPY.footer.indexLinks.length, 6);
-eq('fast experience jobs', COPY.fast.experience.jobs.length, 2);
-eq('fast skills lines', COPY.fast.skills.lines.length, 7);
-
-// Section coverage of the fact index.
-const bySection = {};
-for (const f of FACTS) bySection[f.section] = (bySection[f.section] ?? 0) + 1;
-const EXPECTED_SECTIONS = {
-  now: 6,
-  work: 5,
-  patent: 3,
-  projects: 7,
-  stack: 8,
-  about: 10,
-  recognition: 3,
-  contact: 2,
-};
-for (const [k, v] of Object.entries(EXPECTED_SECTIONS)) {
-  eq(`facts in "${k}"`, bySection[k] ?? 0, v);
+// ---- link helpers -----------------------------------------------------------
+const isUrl = (u) => /^https:\/\/[^\s]+$/.test(u) || /^mailto:[^\s@]+@[^\s@]+\.[^\s@]+$/.test(u) || /^tel:\+?\d+$/.test(u);
+function checkHref(href, path) {
+  if (href.startsWith('#')) check(ANCHORS.has(href.slice(1)), `${path}: anchor ${href} matches no section id`);
+  else if (href.startsWith('/')) check(['/', '/fast'].includes(href), `${path}: unknown route ${href}`);
+  else check(isUrl(href), `${path}: not a valid https/mailto/tel link: ${href}`);
 }
+function walkLinks(node, path) {
+  if (Array.isArray(node)) return node.forEach((v, i) => walkLinks(v, `${path}[${i}]`));
+  if (node && typeof node === 'object') {
+    for (const [k, v] of Object.entries(node)) {
+      if (k === 'href' && typeof v === 'string') checkHref(v, `${path}.href`);
+      else walkLinks(v, `${path}.${k}`);
+    }
+  }
+}
+walkLinks(COPY, 'COPY');
 
-// The SEED url built by repo() must round-trip.
-eq('repo() shape', repo('smart mouse'), GH + '?tab=repositories&q=smart%20mouse');
+// ---- facts ------------------------------------------------------------------
+check(FACTS.length > 0, 'FACTS is empty');
+check(FACT_COUNT === FACTS.length, `FACT_COUNT ${FACT_COUNT} != FACTS.length ${FACTS.length}`);
+const bySection = Object.fromEntries(SECTIONS.map((s) => [s, 0]));
+const titles = new Set();
+FACTS.forEach((f, i) => {
+  check(SECTIONS.includes(f.section), `FACTS[${i}]: unknown section "${f.section}"`);
+  if (SECTIONS.includes(f.section)) bySection[f.section]++;
+  const t = f.title.toLowerCase();
+  check(!titles.has(t), `FACTS[${i}]: duplicate title "${f.title}"`);
+  titles.add(t);
+});
+for (const s of SECTIONS) check(bySection[s] > 0, `no fact in section "${s}"`);
 
-// ---- report ----------------------------------------------------------------
-const badAsserts = asserts.filter((a) => !a.ok);
+// ---- projects ---------------------------------------------------------------
+const names = new Set();
+SEED.forEach((p, i) => {
+  const n = p.name.toLowerCase();
+  check(!names.has(n), `SEED[${i}]: duplicate project name "${p.name}"`);
+  names.add(n);
+  checkHref(p.url, `SEED[${i}].url`);
+});
 
-console.log('source:', SRC);
-console.log('');
-console.log(
-  `strings verified verbatim : ${checked.strings}  (${checked.skipped} structural URLs/hrefs skipped)`
-);
-console.log(`mismatched strings        : ${failures.length}`);
-console.log(`structural assertions     : ${asserts.length - badAsserts.length}/${asserts.length} passed`);
+// ---- stats ------------------------------------------------------------------
+COPY.now.stats.forEach((s, i) => {
+  check(s.value === String(s.count) + s.suffix, `COPY.now.stats[${i}]: value "${s.value}" != count ${s.count} + suffix "${s.suffix}"`);
+});
+
+// ---- skill keys -------------------------------------------------------------
+const { languages, agentic, dataVision, platform } = COPY.stack.groups;
+const stackKeys = [...languages.bars, ...agentic.chips, ...dataVision.chips, ...platform.chips].map((c) => c.key);
+const stackSet = new Set(stackKeys);
+check(stackSet.size === stackKeys.length, `Stack has duplicate skill keys: ${stackKeys.filter((k, i) => stackKeys.indexOf(k) !== i).join(', ')}`);
+SEED.forEach((p, i) => {
+  for (const k of p.skills.split(' ')) check(stackSet.has(k), `SEED[${i}] "${p.name}": skill "${k}" is not in the Stack section`);
+});
+COPY.now.chips.forEach((c, i) => check(stackSet.has(c.key), `COPY.now.chips[${i}]: key "${c.key}" is not in the Stack section`));
+COPY.patent.chips.forEach((c, i) => {
+  if (c.key) check(stackSet.has(c.key), `COPY.patent.chips[${i}]: key "${c.key}" is not in the Stack section`);
+});
+
+// ---- search config ----------------------------------------------------------
+check(SUGGESTIONS.length > 0, 'SUGGESTIONS is empty');
+check(new Set(SUGGESTIONS).size === SUGGESTIONS.length, 'SUGGESTIONS has duplicates');
+check(STOP.size === STOP_WORDS.split(' ').length, 'STOP_WORDS has duplicate words');
+
+// ---- report -----------------------------------------------------------------
+console.log(`facts                : ${FACTS.length}  (${SECTIONS.map((s) => `${s} ${bySection[s]}`).join(', ')})`);
+console.log(`projects (SEED)      : ${SEED.length}`);
+console.log(`strings checked      : ${stringsChecked}`);
+console.log(`structural assertions: ${assertions - assertionFailures}/${assertions} passed`);
 console.log('');
 
 if (failures.length) {
-  console.log('MISMATCHED STRINGS — not found verbatim in source:');
-  for (const f of failures) {
-    console.log(`  ${f.path}`);
-    console.log(`    ${JSON.stringify(f.value.slice(0, 160))}`);
-  }
+  console.log('FAILURES:');
+  failures.forEach((f) => console.log('  ' + f));
   console.log('');
-}
-
-if (badAsserts.length) {
-  console.log('FAILED ASSERTIONS:');
-  for (const a of badAsserts) {
-    console.log(`  ${a.label}: got ${a.actual}, expected ${a.expected}`);
-  }
-  console.log('');
-}
-
-if (failures.length || badAsserts.length) {
   console.log('RESULT: FAIL');
   process.exit(1);
 }
-console.log('RESULT: PASS — every extracted string is verbatim from the prototype.');
+console.log('RESULT: PASS — content structure is sound.');
