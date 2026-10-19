@@ -450,6 +450,25 @@ constant is the whole change when the domain resolves. `canonical`, `og:url`
 and the OG image URL are built from a single origin constant in
 `src/data/site.ts` — nothing else should hardcode the domain.
 
+## Daily rebuild
+
+Everything fetched at build time goes stale between builds, so the site is
+rebuilt once a day without a commit. `.github/workflows/daily-rebuild.yml` runs
+at 00:47 UTC (06:17 IST) and POSTs to a Vercel deploy hook stored in the
+repository secret `VERCEL_DEPLOY_HOOK`. It can also be run by hand from the
+Actions tab. The hook URL is a secret: it never goes in the repo.
+
+- The workflow has `permissions: {}` — it reads nothing and writes nothing in the
+  repo; it only calls the hook.
+- GitHub disables scheduled workflows in a public repo after 60 days with no
+  repository activity, and emails a warning first. Any push resets the clock.
+- A scheduled build runs `prebuild` like any other, so a broken data file fails
+  that day's deploy and the previous deployment stays live.
+- Optional: a fine-grained, read-only `GITHUB_TOKEN` in the Vercel project's
+  environment variables lifts GitHub's unauthenticated rate limit for the
+  build-time feed. Without it the feed still works, and falls back to the
+  curated list if GitHub refuses.
+
 ## Environment notes
 
 - Vercel is connected to the repo: framework preset **Astro**, output `dist`.

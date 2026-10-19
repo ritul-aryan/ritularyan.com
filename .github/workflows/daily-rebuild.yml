@@ -1,0 +1,30 @@
+name: Daily rebuild
+
+# Rebuilds the site once a day so everything fetched at build time (the
+# projects feed, last-push dates, the sync stamp) stays current without a
+# commit. Needs one repository secret, VERCEL_DEPLOY_HOOK: the deploy-hook URL
+# from Vercel (Project -> Settings -> Git -> Deploy Hooks, branch main).
+# Never commit the URL itself; anyone holding it can trigger deployments.
+
+on:
+  schedule:
+    - cron: "47 0 * * *" # 00:47 UTC = 06:17 IST, every day
+  workflow_dispatch: # the "Run workflow" button, for a manual refresh
+
+permissions: {}
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger the Vercel deploy hook
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::error::Repository secret VERCEL_DEPLOY_HOOK is not set."
+            exit 1
+          fi
+          curl --fail --silent --show-error --max-time 30 -X POST "$HOOK" > /dev/null
+          echo "Deploy hook triggered. The new build appears under Deployments on Vercel."
