@@ -77,6 +77,19 @@ export const COPY = {
     clockPanelWhere: "DELHI NCR · IST (UTC+5:30) · WHERE I AM",
     modeFull: "FULL",
     modeFast: "FAST",
+    /** Phone and tablet menu (below 980px), deviation 9. */
+    menuOpen: "MENU",
+    menuClose: "CLOSE",
+    menuLinks: [
+      { label: "ABOUT", href: '#about' },
+      { label: "NOW", href: '#now' },
+      { label: "EXPERIENCE", href: '#work' },
+      { label: "PATENT", href: '#patent' },
+      { label: "PROJECTS", href: '#projects' },
+      { label: "STACK", href: '#stack' },
+      { label: "RECOGNITION", href: '#recognition' },
+      { label: "CONTACT", href: '#contact' },
+    ] as readonly NavLink[],
   },
 
   hero: {

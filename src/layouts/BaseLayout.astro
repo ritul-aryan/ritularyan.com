@@ -124,6 +124,41 @@ const ogImage = new URL('/og.png', SITE.origin).href;
           });
         }
 
+        /* --- Phone menu (deviation 9) --- */
+        var menuBtn = document.querySelector('[data-menu-toggle]');
+        var menu = document.querySelector('[data-menu-panel]');
+        if (menuBtn && menu) {
+          var setMenu = function (open) {
+            menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            menuBtn.textContent = open ? menuBtn.dataset.closeLabel : menuBtn.dataset.openLabel;
+            menu.style.height = open ? menu.firstElementChild.offsetHeight + 'px' : '0px';
+            if (open) menu.removeAttribute('inert');
+            else menu.setAttribute('inert', '');
+          };
+          var isOpen = function () {
+            return menuBtn.getAttribute('aria-expanded') === 'true';
+          };
+          menuBtn.addEventListener('click', function () {
+            setMenu(!isOpen());
+          });
+          menu.addEventListener('click', function (e) {
+            if (e.target.closest('a')) setMenu(false);
+          });
+          document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && isOpen()) {
+              setMenu(false);
+              menuBtn.focus();
+            }
+          });
+          if (window.matchMedia) {
+            var wide = window.matchMedia('(min-width: 981px)');
+            var onWide = function () {
+              if (wide.matches) setMenu(false);
+            };
+            if (wide.addEventListener) wide.addEventListener('change', onWide);
+          }
+        }
+
         /* --- LiveClock --- */
         var face = document.querySelector('[data-clock]');
         var panelTime = document.querySelector('[data-clock-ist]');

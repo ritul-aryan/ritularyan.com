@@ -55,6 +55,19 @@ const isFull = mode === 'full';
     </button>
 
     <button
+      class="rk-menu-btn"
+      data-rk-btn
+      data-menu-toggle
+      data-open-label={header.menuOpen}
+      data-close-label={header.menuClose}
+      aria-expanded="false"
+      aria-controls="rk-menu"
+      type="button"
+    >
+      {header.menuOpen}
+    </button>
+
+    <button
       class="rk-theme-btn"
       data-rk-btn
       data-cursor
@@ -85,4 +98,10 @@ const isFull = mode === 'full';
   <div class="rk-clockpanel" data-clock-panel>
     <div class="rk-clockpanel__grid" data-clock-grid></div>
   </div>
+
+  <nav class="rk-menu" id="rk-menu" data-menu-panel aria-label="Sections" inert>
+    <div class="rk-menu__grid">
+      {header.menuLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+    </div>
+  </nav>
 </div>

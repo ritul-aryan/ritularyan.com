@@ -98,7 +98,8 @@ Spec — match the prototype's timing and easing exactly:
 
 No framework and no hydration. "Zero client JS" means no framework and no
 hydration, **not** literally zero bytes: a small synchronous inline `<head>`
-script for theme (and one for the clock) is sanctioned. Inline only — no
+script for theme (and one for the clock and the phone menu, deviation 9) is
+sanctioned. Inline only — no
 external file, no extra request. Theme reads the same `rk-theme` localStorage
 key, runs before first paint so there is no wrong-theme flash, and is wrapped in
 `try`/`catch` falling back to the design default if localStorage is blocked.
@@ -112,14 +113,14 @@ inline `window.__astro_dev_toolbar__` blob that are absent from the build.
 
 ## Approved deviations from the prototype
 
-There are exactly **eight**, all **explicitly approved by Ritul**. Do **not**
+There are exactly **nine**, all **explicitly approved by Ritul**. Do **not**
 revert them as "fidelity violations". This register is exhaustive — any departure
 from the prototype's layout or behaviour not listed here is a bug. Everything
 else stays exact. Wording is not covered here — see Content above.
 
 Deviations 1-4, 6 and 8 are **bug fixes**: the prototype's behaviour has no
-coherent intentional reading. Deviations 5 and 7 are **new design additions**,
-requested deliberately, and are not fidelity matters at all.
+coherent intentional reading. Deviations 5, 7 and 9 are **new design
+additions**, requested deliberately, and are not fidelity matters at all.
 
 ### 1. `/fast` sections get `id` attributes the prototype lacks
 
@@ -301,6 +302,24 @@ resizing and reduced motion.
   (previously the single static frame caught the scattered intro positions),
   with no scroll parallax.
 - **Brand link** has an accessible name, since its text is hidden below 380px.
+
+### 9. Phone menu and accessible text on accent (2026-10-19)
+
+Both chosen by Ritul.
+
+- **Phone and tablet menu.** Below 980px the prototype hides the whole nav and
+  offers nothing in its place. A `MENU` button in the bar opens a panel in the
+  clock panel's style with every section (About, Now, Experience, Patent,
+  Projects, Stack, Recognition, Contact). It closes on a link, on Escape (focus
+  returns to the button), and when the window widens past 980px; it is `inert`
+  while closed. Driven by the sanctioned inline script, so it works on `/fast`
+  with no external file. The header's desktop nav — including `WORK` →
+  `#projects` — is unchanged.
+- **Text on accent.** `--rk-on-acc` replaces hardcoded white on accent
+  backgrounds (FULL/FAST active, RETRIEVE, the email button, link-row hover,
+  text selection): near-black `#08080B` in dark theme (5.97:1, was 3.36:1),
+  white in light theme (4.53:1, unchanged). Lives in `global.css`, not the
+  generated `tokens.css`.
 
 ## Considered and rejected — do not re-raise
 

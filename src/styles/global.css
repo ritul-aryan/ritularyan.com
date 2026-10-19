@@ -40,9 +40,20 @@ a:hover {
   color: var(--rk-acc);
 }
 
+/* Text on accent backgrounds — deviation 9. White on the dark-theme accent
+ * is 3.36:1, below WCAG AA; near-black is 5.97:1. The light-theme accent
+ * already passes with white (4.53:1), so it keeps white. */
+:root {
+  --rk-on-acc: #08080b;
+}
+
+:root[data-theme='light'] {
+  --rk-on-acc: #ffffff;
+}
+
 ::selection {
   background: var(--rk-acc);
-  color: #fff;
+  color: var(--rk-on-acc);
 }
 
 input,
@@ -375,11 +386,68 @@ html {
 /* Active state reflects the actual route — approved deviation 2. */
 .rk-mode--active {
   background: var(--rk-acc);
-  color: #fff;
+  color: var(--rk-on-acc);
 }
 
 .rk-mode--active:hover {
-  color: #fff;
+  color: var(--rk-on-acc);
+}
+
+/* Phone and tablet menu — deviation 9. Hidden at desktop widths, where the
+ * full nav is visible; below 980px the nav is hidden and this replaces it. */
+.rk-menu-btn {
+  display: none;
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--rk-line);
+  height: var(--rk-bar-h);
+  padding: 0 15px;
+  cursor: pointer;
+  color: var(--rk-ink);
+  font: inherit;
+  letter-spacing: 0.16em;
+  align-items: center;
+}
+
+.rk-menu {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.rk-menu__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--rk-line);
+}
+
+.rk-menu__grid a {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--rk-line);
+  border-right: 1px solid var(--rk-line);
+  color: var(--rk-ink);
+  letter-spacing: 0.18em;
+}
+
+.rk-menu__grid a:nth-child(2n) {
+  border-right: none;
+}
+
+.rk-menu__grid a:hover {
+  color: var(--rk-acc);
+}
+
+@media (max-width: 980px) {
+  .rk-menu-btn {
+    display: flex;
+  }
+}
+
+@media (min-width: 981px) {
+  .rk-menu {
+    display: none;
+  }
 }
 
 /* ---------------------------------------------------------------- hero ---- */
@@ -541,7 +609,7 @@ html {
   appearance: none;
   background: var(--rk-acc);
   border: none;
-  color: #fff;
+  color: var(--rk-on-acc);
   font-family: var(--rk-font-mono);
   font-size: 12px;
   letter-spacing: 0.18em;
@@ -835,7 +903,7 @@ html {
 
 .rk-linkrow a:hover {
   background: var(--rk-acc);
-  color: #fff;
+  color: var(--rk-on-acc);
 }
 
 /* ------------------------------------------------------------ patterns ---- */
@@ -1486,7 +1554,7 @@ html {
 
 .rk-contact__links a:first-child {
   background: var(--rk-acc);
-  color: #fff;
+  color: var(--rk-on-acc);
 }
 
 .rk-contact__links a:not(:first-child):hover {
