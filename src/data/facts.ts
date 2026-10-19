@@ -9,26 +9,26 @@ export const FACTS: readonly Fact[] = [
   {
     section: "now",
     title: "SAGE — what it is",
-    text: "SAGE is an agentic analytics platform I'm building at Akin Pte. Ltd. Five specialised agents run the exploratory-data-analysis pipeline, every step writes to a replayable audit trail, and inference stays local on a dual-model router/generator split.",
-    keywords: "sage analytics platform agentic akin current building product eda pipeline",
+    text: "SAGE is an agentic analytics platform I built at Akin Pte. Ltd. to a working prototype. A multi-agent pipeline runs exploratory data analysis, every transformation is written to a replayable audit trail, and models run in the cloud with a local Ollama fallback. It is paused for higher-priority work.",
+    keywords: "sage analytics platform agentic akin prototype delivered shipped real product eda pipeline",
   },
   {
     section: "now",
     title: "SAGE — how it got approved",
-    text: "I pitched SAGE to the Board, the Director and the CEO of Akin. It was approved and I was given the architecture end to end — my design, my calls, my responsibility.",
+    text: "I pitched SAGE to the Board, the Director and the CEO of Akin. It was approved and I was given the architecture end to end — my design, my calls, my responsibility — and I delivered a working prototype.",
     keywords: "pitch board director ceo approved presentation stakeholders ownership leadership",
   },
   {
     section: "now",
     title: "SAGE — the stack",
-    text: "SAGE runs React and TypeScript with Plotly on the front, FastAPI with Alembic migrations behind it, pytest for the suite, and Docker Compose to hold the whole thing together.",
+    text: "SAGE runs React and TypeScript with Plotly on the front, FastAPI with Alembic migrations behind it, pytest for the suite, and Docker Compose to hold the whole thing together — 61 commits in structured sprints.",
     keywords: "sage stack react typescript plotly fastapi alembic pytest docker compose technology",
   },
   {
     section: "now",
-    title: "Local inference",
-    text: "SAGE keeps inference local through Ollama on a dual-model architecture — a small router model decides what kind of question it is, a larger generator answers. Client data never leaves the machine.",
-    keywords: "local inference ollama privacy router generator dual model on-premise offline security",
+    title: "Model fallback",
+    text: "SAGE calls a cloud model (Gemini) first and falls back to a local model through Ollama when offline, so a dropped connection never stops the pipeline.",
+    keywords: "model inference gemini ollama local cloud fallback offline llm provider resilience",
   },
   {
     section: "now",
@@ -39,13 +39,19 @@ export const FACTS: readonly Fact[] = [
   {
     section: "now",
     title: "Agent architecture",
-    text: "The five SAGE agents split the work: profiling, cleaning, analysis, visualisation and narrative. They pass structured state, not prose, which is the only way the audit trail stays useful.",
+    text: "SAGE's agents split the work — an orchestrator directing profiling, cleaning, feature-engineering, storytelling and auditing agents. They pass structured state, not prose, which is the only way the audit trail stays useful.",
     keywords: "agents architecture five multi agent design orchestration state handoff workflow langgraph",
+  },
+  {
+    section: "now",
+    title: "What I'm doing now",
+    text: "Right now: a separate internal AI product at Akin that isn't public yet, NanoGLM-Flash, and reviving the eldercare robot from the patent — documentation first, then the software.",
+    keywords: "now currently today working doing latest present recent update news",
   },
   {
     section: "work",
     title: "Current role",
-    text: "I'm a Software Development Intern in AI Tools & Automation at Akin Pte. Ltd., Singapore, working remotely from Delhi NCR. Started June 2026, still there.",
+    text: "I'm a Software Development Intern in AI Tools & Automation at Akin Pte. Ltd., Singapore, working remotely from Delhi NCR. Started June 2026, still there — now on a separate internal AI product that isn't public yet.",
     keywords: "current job role employed akin intern singapore remote where working now company",
   },
   {
@@ -75,7 +81,7 @@ export const FACTS: readonly Fact[] = [
   {
     section: "patent",
     title: "The patent",
-    text: "I'm a named inventor on Indian Patent Application 202611015954 A, \"An AI Powered Wheeled Omnidirectional Robot\", filed 12 February 2026 and published 27 March 2026 in Journal 13/2026. Applicant: K.R. Mangalam University.",
+    text: "I'm a named inventor on Indian Patent Application 202611015954 A, \"An AI Powered Wheeled Omnidirectional Robot\", filed 12 February 2026 and published 27 March 2026 in Journal 13/2026. Applicant: K.R. Mangalam University. It is awaiting a request for examination.",
     keywords: "patent invention filed published application number journal ip intellectual property inventor robot",
   },
   {
@@ -117,13 +123,25 @@ export const FACTS: readonly Fact[] = [
   {
     section: "projects",
     title: "Other projects",
-    text: "Also: a movie recommender, an RL-ready Advanced Snake environment, a commercial data analysis for Vardaan Foods, and DDoS traffic classification (in progress).",
-    keywords: "movie recommender snake reinforcement learning vardaan foods ddos network traffic security side projects",
+    text: "Also: a movie recommender and an object-oriented Snake game built on a finite-state machine.",
+    keywords: "movie recommender snake game finite state machine side projects",
+  },
+  {
+    section: "projects",
+    title: "NanoGLM-Flash",
+    text: "NanoGLM-Flash is a 72M-parameter multimodal language model I built and trained from scratch, with a Zero-Critic GRPO post-training pipeline, benchmarked on NVIDIA Blackwell.",
+    keywords: "nanoglm llm language model train training pytorch grpo multimodal scratch blackwell gpu deep learning shipped",
+  },
+  {
+    section: "projects",
+    title: "DDoS detection",
+    text: "Real-time ML intrusion detection: it classifies malicious traffic from network-capture features and surfaces it in a live security-operations dashboard.",
+    keywords: "ddos intrusion detection network traffic security cybersecurity soc dashboard machine learning sklearn realtime",
   },
   {
     section: "projects",
     title: "How this list stays current",
-    text: "The project grid reads my GitHub live and shows only repos tagged `portfolio`. I curate it by adding or removing a tag on GitHub — the page never gets edited.",
+    text: "The project grid is rebuilt every morning from my GitHub and shows only repos tagged `portfolio`. I curate it by adding or removing a tag on GitHub — the page never gets edited.",
     keywords: "github api live auto update topic tag curated dynamic feed repos refresh",
   },
   {
@@ -147,7 +165,7 @@ export const FACTS: readonly Fact[] = [
   {
     section: "stack",
     title: "Agentic tooling",
-    text: "LangGraph, LangChain, RAG pipelines, Ollama, RLHF and HuggingFace embeddings — the agentic and LLM layer is where I spend most of my time.",
+    text: "LangGraph, LangChain, RAG pipelines, Ollama, RLHF, HuggingFace embeddings and PyTorch — the agentic and LLM layer is where I spend most of my time.",
     keywords: "langgraph langchain rag ollama rlhf huggingface embeddings llm agent framework tooling ai",
   },
   {
@@ -201,7 +219,7 @@ export const FACTS: readonly Fact[] = [
   {
     section: "about",
     title: "Education",
-    text: "BCA in Artificial Intelligence & Data Science at K.R. Mangalam University, expected 2027.",
+    text: "Bachelor of Computer Applications (BCA) in Artificial Intelligence & Data Science at K.R. Mangalam University, expected 2027.",
     keywords: "education degree study university college bca graduation student academic qualification",
   },
   {
@@ -219,7 +237,7 @@ export const FACTS: readonly Fact[] = [
   {
     section: "about",
     title: "Why hire me",
-    text: "I've taken a system from a pitch in front of a CEO to a running architecture, I hold a patent as software lead, and I ship the front end and the back end myself. I'm early in my career and that's exactly why I'll outwork the brief.",
+    text: "I've taken a system from a pitch in front of a CEO to a working prototype, I'm a named inventor and software lead on a published patent application, and I ship the front end and the back end myself. I'm early in my career and that's exactly why I'll outwork the brief.",
     keywords: "why hire good fit strengths value reason choose recommend best candidate sell",
   },
   {
@@ -231,7 +249,7 @@ export const FACTS: readonly Fact[] = [
   {
     section: "about",
     title: "This website",
-    text: "This page is a retrieval system, not a chatbot. The index is hand-written facts about me, scored in your browser with no server and no API key. The background is that index — each point is a fact, and they light up when they match.",
+    text: "This page is a retrieval system, not a chatbot. The index is hand-written facts about me, scored in your browser with no server and no API key. The background is that index — each point is a fact, and they light up when they match. The site rebuilds itself every morning from GitHub.",
     keywords: "website site built how made this page tech portfolio design retrieval search index background canvas",
   },
   {
@@ -257,6 +275,12 @@ export const FACTS: readonly Fact[] = [
     title: "Certifications",
     text: "IBM Big Data with Spark & Scala (June 2026), NASSCOM Salesforce Developer Catalyst (May 2025), UNESCO MGIEP Media Literacy (April 2025), IBM Data Analysis with Python (October 2024).",
     keywords: "certifications certificate ibm nasscom unesco courses training credentials spark scala salesforce",
+  },
+  {
+    section: "recognition",
+    title: "Volunteering",
+    text: "Volunteered at Hack KRMU 4.0 (February 2025), a university hackathon run with GDG New Delhi and GDG Cloud Noida, and received a Certificate of Appreciation.",
+    keywords: "volunteer volunteering hackathon hack krmu gdg google developer community event",
   },
   {
     section: "contact",

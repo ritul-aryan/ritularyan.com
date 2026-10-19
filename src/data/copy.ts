@@ -88,12 +88,12 @@ export const COPY = {
     devanagari: "ऋतुल आर्यन",
     lede: "I build systems that reason before they answer — multi-agent pipelines, retrieval, and the plumbing underneath. This page is one of them.",
     typewriterLines: [
-      "Architecting SAGE, an agentic platform at Akin.",
-      "Named inventor on Indian patent 202611015954 A.",
-      "Five agents, one pipeline, one audit trail.",
-      "Inference stays local. Client data stays put.",
+      "Delivered SAGE, an agentic analytics prototype, at Akin.",
+      "Named inventor on Indian patent application 202611015954 A.",
+      "Trained NanoGLM-Flash, a 72M multimodal model, from scratch.",
+      "Every transformation logged. Every answer replayable.",
       "Delhi state champion in Kurash, Under-19.",
-      "BCA in AI & Data Science, expected 2027.",
+      "Bachelor of Computer Applications (BCA) in AI & Data Science, expected 2027.",
     ] as readonly string[],
     askBullet: "◆",
     /** Wraps the fact count: `askBefore` + 44 + `askAfter`. */
@@ -112,7 +112,7 @@ export const COPY = {
     paragraphs: [
       "I'm twenty-something, based in Delhi NCR, and most of what I know I learned by building the thing badly first. I'm drawn to problems where a single model isn't enough — where you need several of them checking each other, a retrieval layer that doesn't hallucinate, and an audit trail you can actually defend in a room full of people who didn't write the code.",
       "Before software I spent years on a mat: I was Delhi state champion in Kurash at Under-19. That's where I learned the only useful thing about pressure — you don't rise to the occasion, you fall to the level of your preparation. It's why I over-prepare, why I write tests, and why I'd rather ship something small that holds than something large that doesn't.",
-      "Currently finishing a BCA in AI & Data Science (2027) while working as a software development intern. I read papers on the metro, I break things on purpose, and I'm looking for people who'd rather argue about architecture than agree about nothing.",
+      "Currently finishing a Bachelor of Computer Applications (BCA) in AI & Data Science (2027) while working as a software development intern. I read papers on the metro, I break things on purpose, and I'm looking for people who'd rather argue about architecture than agree about nothing.",
     ] as readonly string[],
     links: [
       { label: "EMAIL", href: 'mailto:ritularyan1723@gmail.com' },
@@ -134,12 +134,12 @@ export const COPY = {
     badge: "PROTOTYPE DELIVERED",
     /** Heading of the dated log above SAGE (entries live in src/data/now.ts). */
     logHeading: "Log",
-    body: "An agentic analytics platform I pitched to the Board, the Director and the CEO of Akin Pte. Ltd. — and was approved to architect end to end. Five specialised agents run the exploratory-data-analysis pipeline. Every step writes to an audit trail you can replay. Inference stays local on a dual-model router/generator split, so client data never leaves the machine.",
+    body: "An agentic analytics platform I pitched to the Board, the Director and the CEO of Akin Pte. Ltd. — and was approved to architect end to end. I delivered a working prototype before it was paused for higher-priority work. A multi-agent pipeline runs the exploratory data analysis — ingestion, cleaning, feature engineering, visualisation — and every transformation is written to an audit trail, so any result can be replayed back to the raw input. Models run in the cloud (Gemini) with a local Ollama fallback.",
     stats: [
-      { value: "5", label: "agents in the pipeline", count: 5, suffix: "" },
-      { value: "2", label: "model router / generator", count: 2, suffix: "" },
-      { value: "100%", label: "local inference · Ollama", count: 100, suffix: "%" },
       { value: "3", label: "executives in the room at the pitch", count: 3, suffix: "" },
+      { value: "100%", label: "of transformations logged to the audit trail", count: 100, suffix: "%" },
+      { value: "2", label: "models · cloud first, local fallback", count: 2, suffix: "" },
+      { value: "61", label: "commits in structured sprints", count: 61, suffix: "" },
     ] as readonly Stat[],
     chips: [
       { key: "langgraph", label: "LangGraph" },
@@ -160,9 +160,10 @@ export const COPY = {
         org: "Akin Pte. Ltd.",
         meta: "Software Development Intern · AI Tools & Automation · Singapore, remote",
         bullets: [
-          "Pitched SAGE to the Board, Director and CEO; approved to architect and build it end to end.",
-          "Designed a five-agent EDA pipeline with a complete, replayable audit trail.",
-          "Kept inference local on a dual-model router/generator architecture over Ollama.",
+          "Pitched SAGE to the Board, Director and CEO; approved to architect and build it end to end, and delivered a working prototype before it was paused for higher-priority work.",
+          "Designed a multi-agent EDA pipeline — ingestion, cleaning, feature engineering, visualisation — with every transformation written to a replayable audit trail.",
+          "Shipped a React/TypeScript and Plotly dashboard over FastAPI, Alembic, pytest and Docker Compose, across 61 commits.",
+          "Now on a separate internal AI product, not yet public.",
         ],
       },
       {
@@ -203,6 +204,7 @@ export const COPY = {
       { key: "PUBLISHED", lines: ["27 MARCH 2026"] },
       { key: "JOURNAL", lines: ["13/2026"] },
       { key: "APPLICANT", lines: ["K.R. Mangalam", "University"] },
+      { key: "STATUS", lines: ["AWAITING REQUEST", "FOR EXAMINATION"] },
     ] as readonly { readonly key: string; readonly lines: readonly string[] }[],
   },
 
@@ -283,13 +285,14 @@ export const COPY = {
       heading: "Off the keyboard",
       /** Two lines in the prototype, split with <br>. */
       titleLines: ["State Champion", "Kurash"] as readonly string[],
-      body: "Delhi State School Games, Under-19, −81 kg (2022–2023). Zonal podiums in Judo alongside it.",
+      body: "Delhi State School Games, Under-19, −81 kg (2022–2023). Zonal podiums: second in Judo and third in Kurash (2022–2023), third in Judo (2017–2018).",
     },
     leadership: {
       heading: "Leadership",
       items: [
         "Software Lead, 7-member robotics team — Smart India Hackathon internal round.",
         "Team Leader, NAAC accreditation data analysis.",
+        "Volunteer, Hack KRMU 4.0 with GDG New Delhi and GDG Cloud Noida — Certificate of Appreciation (February 2025).",
       ] as readonly string[],
     },
     certifications: {
@@ -355,7 +358,7 @@ export const COPY = {
     note: "// FAST PATH — plain text, no canvas, no motion, no retrieval engine.",
     name: "Ritul Aryan",
     devanagari: "ऋतुल आर्यन",
-    summaryLines: ["AI Software Engineer — agentic systems, multi-agent orchestration, LLM applications, full-stack.", "Delhi NCR, India · BCA in AI & Data Science, expected 2027."] as readonly string[],
+    summaryLines: ["AI Software Engineer — agentic systems, multi-agent orchestration, LLM applications, full-stack.", "Delhi NCR, India · Bachelor of Computer Applications (BCA) in AI & Data Science, expected 2027."] as readonly string[],
     contactLinks: [
       { label: "ritularyan1723@gmail.com", href: 'mailto:ritularyan1723@gmail.com' },
       { label: "+91 78278 62135", href: 'tel:+917827862135' },
@@ -370,10 +373,11 @@ export const COPY = {
           title: "Akin Pte. Ltd. — Software Development Intern, AI Tools & Automation",
           meta: "| Singapore, remote | June 2026 – present",
           bullets: [
-            "- Pitched SAGE, an agentic analytics platform, to the Board, Director and CEO; approved to architect and build end to end.",
-            "- Five-agent EDA pipeline with a full, replayable audit trail.",
-            "- Local Ollama inference on a dual-model router/generator architecture.",
-            "- React/TypeScript + Plotly over FastAPI, Alembic, pytest, Docker Compose.",
+            "- Pitched SAGE, an agentic analytics platform, to the Board, Director and CEO; approved to architect and build end to end, and delivered a working prototype before it was paused for higher-priority work.",
+            "- Multi-agent EDA pipeline with every transformation written to a replayable audit trail.",
+            "- Cloud model (Gemini) with a local Ollama fallback.",
+            "- React/TypeScript + Plotly over FastAPI, Alembic, pytest, Docker Compose, across 61 commits.",
+            "- Now on a separate internal AI product, not yet public.",
           ],
         },
         {
@@ -392,6 +396,7 @@ export const COPY = {
       bullets: [
         "- Filed 12 February 2026; published 27 March 2026 (Journal 13/2026). Applicant: K.R. Mangalam University.",
         "- Named inventor, 1 of 7. Software lead: sensor fusion, navigation, real-time fall detection (OpenCV/MediaPipe) with a 10-second confirmation loop before emergency escalation.",
+        "- Status: awaiting a request for examination.",
       ] as readonly string[],
     },
     projectsHeading: "## PROJECTS",
@@ -413,7 +418,7 @@ export const COPY = {
     },
     recognition: {
       heading: "## RECOGNITION",
-      body: "Software Lead, 7-member robotics team (Smart India Hackathon internal round) · Team Leader, NAAC accreditation data analysis · State Champion, Kurash — Delhi State School Games Under-19 −81 kg (2022–2023), plus zonal podiums in Judo.",
+      body: "Software Lead, 7-member robotics team (Smart India Hackathon internal round) · Team Leader, NAAC accreditation data analysis · State Champion, Kurash — Delhi State School Games Under-19 −81 kg (2022–2023), plus zonal podiums in Judo and Kurash · Volunteer, Hack KRMU 4.0 (February 2025).",
     },
     footerNote: "Switch to FULL in the bar above for the interactive version.",
     nowHeading: "## NOW",

@@ -10,9 +10,9 @@ export const SITE = {
   description:
     'AI software engineer building agentic systems, multi-agent orchestration and LLM applications. Delhi NCR, India. Named inventor on a published Indian patent application.',
 
-  /** Longer og:description used on the full route. */
+  /** Longer og:description used on the full route. `{count}` becomes the live fact count. */
   ogDescription:
-    'Agentic systems, multi-agent orchestration, LLM applications. Ask the index — 44 facts, scored in your browser.',
+    'Agentic systems, multi-agent orchestration, LLM applications. Ask the index — {count} facts, scored in your browser.',
 
   /** Shorter twitter:description. */
   twitterDescription: 'Agentic systems, multi-agent orchestration, LLM applications.',
