@@ -7,7 +7,7 @@
  *
  * The IntroLoader markup sits FIRST deliberately. It is a position:fixed overlay,
  * so document order has no bearing on what covers what — but it does decide tab
- * order, and CLAUDE.md requires SKIP to be reachable by Tab. Rendered last, SKIP
+ * order, and BUILD-RULES.md requires SKIP to be reachable by Tab. Rendered last, SKIP
  * fell behind every header and content link and was unreachable in practice
  * (measured: still not focused after 13 presses). First in the body makes it the
  * first tab stop, which is what a modal overlay should be. Every section remains
@@ -40,7 +40,7 @@ import { SITE } from '../data/site';
   {/* ScrollProgress rail */}
   <div class="rk-progress" data-progress aria-hidden="true"></div>
 
-  {/* CustomCursor. Hidden unless (hover:hover) and (pointer:fine) — see CLAUDE.md,
+  {/* CustomCursor. Hidden unless (hover:hover) and (pointer:fine) — see BUILD-RULES.md,
       and do not widen that scope. */}
   <div class="rk-cursor-ring" data-cursor-ring aria-hidden="true">
     <span data-cursor-fill></span>

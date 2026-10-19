@@ -102,7 +102,7 @@ for (const entry of VALIDATED) {
       `${entry.file}: ${comments.length} comment-shaped key(s) — JSON has no comments and ` +
         `${entry.platform} rejects unknown properties:\n      ` +
         comments.join('\n      ') +
-        `\n      Explain config in CLAUDE.md instead.`
+        `\n      Explain config in BUILD-RULES.md instead.`
     );
   }
 

@@ -69,7 +69,7 @@ input:focus {
  * hex, so light and dark both work with no extra rules. Square, thin, transparent
  * track, thumb in the line token, accent on hover.
  *
- * `scrollbar-gutter: stable` is deliberately NOT set — see CLAUDE.md; it would
+ * `scrollbar-gutter: stable` is deliberately NOT set — see BUILD-RULES.md; it would
  * reserve the scrollbar's width permanently and shift every width measurement. */
 
 /* Firefox, and any engine implementing the standard properties. */
@@ -667,7 +667,7 @@ html {
 }
 
 /* The 230px 4:5 frame is load-bearing: a photo drops in here later with no
- * re-layout. See CLAUDE.md — do not collapse this column. */
+ * re-layout. See BUILD-RULES.md — do not collapse this column. */
 .rk-about__figure {
   width: 230px;
   flex: 0 0 230px;
@@ -682,7 +682,7 @@ html {
 
 /* Location top, registration mark centred in the space the photo will occupy,
  * time on a ruled bottom row. Coordinates live in the caption below the frame,
- * never in here — see CLAUDE.md. */
+ * never in here — see BUILD-RULES.md. */
 .rk-readout {
   position: absolute;
   inset: 0;
@@ -1694,7 +1694,7 @@ html {
 
 /* ---------------------------------------------------------- IntroLoader ---- */
 /* The dismissal is CSS, not JS: if the behaviours bundle never runs, the overlay
- * still clears itself and the page underneath is reachable. See CLAUDE.md. */
+ * still clears itself and the page underneath is reachable. See BUILD-RULES.md. */
 
 @keyframes rk-loader-out {
   to {

@@ -1,6 +1,6 @@
 // AUTO-EXTRACTED from deploy/index.html. Do not hand-edit.
 // Fallback project list, used when the build-time GitHub fetch yields nothing.
-// Source of truth: deploy/index.html (the verified render of the Claude Design
+// Source of truth: deploy/index.html (the verified render of the design
 // prototype). Regenerate rather than retype.
 
 import type { Project } from './types';

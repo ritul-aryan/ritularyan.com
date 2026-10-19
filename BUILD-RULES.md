@@ -1,7 +1,7 @@
 # ritularyan.com — build rules
 
 Personal portfolio for Ritul Aryan, AI Software Engineer. Production rebuild of a
-Claude Design prototype. Deploys to Vercel as static output.
+design prototype. Deploys to Vercel as static output.
 
 ## Target stack — decided, do not substitute
 
@@ -173,7 +173,7 @@ second scroll container stacked on the document's. Two scrollbars.
 Measured before the fix, at 1440px and 390px on `/`:
 computed `overflow-y: auto`, and **both** `docScrolls` and `rootScrolls` true.
 
-It was invisible in Claude Design's constrained preview panel, which is why it
+It was invisible in the design tool's constrained preview panel, which is why it
 survived into the export.
 
 **What we do instead:** `overflow-x: clip`. `clip` does not trigger the coercion
@@ -457,6 +457,6 @@ and the OG image URL are built from a single origin constant in
   `api.github.com/search/repositories?q=user:ritul-aryan+topic:portfolio`, baked
   into static HTML, with the SEED list as fallback. The build must never break
   because GitHub is down.
-- Do NOT port `image-slot.js`, `<image-slot>`, `support.js`, or Claude Design's
+- Do NOT port `image-slot.js`, `<image-slot>`, `support.js`, or the design tool's
   dc-runtime. Clean rebuild. No portrait placeholder — a photo is coming later
   and must drop into the About cell's 230px 4:5 frame with no re-layout.

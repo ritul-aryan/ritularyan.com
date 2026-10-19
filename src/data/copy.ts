@@ -53,7 +53,7 @@ export const COPY = {
 
   /**
    * IntroLoader. The 1.7s duration is fixed, not real load progress, and SKIP
-   * is the visitor's route to the light path — see CLAUDE.md before changing.
+   * is the visitor's route to the light path — see BUILD-RULES.md before changing.
    */
   loader: {
     name: "ऋतुल आर्यन",

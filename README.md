@@ -25,4 +25,4 @@ custom properties (no Tailwind) · self-hosted fonts via @fontsource · Vercel.
 | `npm run check` | Type-check |
 | `npm run verify` | Config, font and content checks |
 
-Build rules and design decisions live in `CLAUDE.md`.
+Build rules and design decisions live in `BUILD-RULES.md`.

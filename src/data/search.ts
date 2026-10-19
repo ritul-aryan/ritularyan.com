@@ -1,6 +1,6 @@
 // AUTO-EXTRACTED from deploy/index.html. Do not hand-edit.
 // Retrieval configuration: stop words and the hero suggestion chips.
-// Source of truth: deploy/index.html (the verified render of the Claude Design
+// Source of truth: deploy/index.html (the verified render of the design
 // prototype). Regenerate rather than retype.
 
 /**
