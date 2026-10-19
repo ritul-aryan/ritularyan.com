@@ -2,10 +2,8 @@
 /**
  * Footer.
  *
- * NOTE: the index links contain Devanagari but the prototype renders them in
- * IBM Plex Mono, which ships no Devanagari glyphs — so those characters fall
- * back to whatever the visitor's OS provides. Reproduced faithfully; see the
- * font-fallback note reported at step 3.
+ * The index links contain Devanagari. They render through the mono stack's
+ * Tiro Devanagari Hindi fallback — approved deviation 3, see CLAUDE.md.
  */
 import { COPY } from '../data/copy';
 import { FACT_COUNT } from '../data/facts';
