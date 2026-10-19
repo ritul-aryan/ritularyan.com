@@ -27,7 +27,7 @@ const clouds = [agentic, dataVision, platform];
         <div class="rk-stack__heading">{languages.heading}</div>
         {
           languages.bars.map((bar) => (
-            <div class="rk-skill" data-skill={bar.key} data-cursor>
+            <div class="rk-skill" data-skill={bar.key} data-cursor tabindex="0" role="button" aria-pressed="false">
               <div class="rk-skill__row">
                 <span>{bar.label}</span>
                 <span class="rk-skill__level">{bar.level}</span>
@@ -46,7 +46,7 @@ const clouds = [agentic, dataVision, platform];
             <div class="rk-stack__heading">{group.heading}</div>
             <div class="rk-cloud">
               {group.chips.map((chip) => (
-                <span data-skill={chip.key} data-cursor>
+                <span data-skill={chip.key} data-cursor tabindex="0" role="button" aria-pressed="false">
                   {chip.label}
                 </span>
               ))}

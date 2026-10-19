@@ -38,6 +38,8 @@ export default function AskIndex() {
   const [sources, setSources] = useState<Source[]>([]);
   const [status, setStatus] = useState('');
   const [open, setOpen] = useState(false);
+  /** The full answer, announced once to screen readers (the visible text streams). */
+  const [spoken, setSpoken] = useState('');
 
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -54,6 +56,22 @@ export default function AskIndex() {
     if (!el || !inner) return;
     el.style.height = open ? inner.offsetHeight + 28 + 'px' : '0px';
   }, [open, answer, sources]);
+
+  /**
+   * Keep the panel fitted when its content reflows without changing — a resize
+   * or a phone rotation. Without this a finished answer is clipped (audit,
+   * 2026-10-05). Deviation 8.
+   */
+  useEffect(() => {
+    const el = panelRef.current;
+    const inner = innerRef.current;
+    if (!open || !el || !inner || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => {
+      el.style.height = inner.offsetHeight + 28 + 'px';
+    });
+    ro.observe(inner);
+    return () => ro.disconnect();
+  }, [open]);
 
   const stopStream = () => {
     if (streamRef.current !== null) {
@@ -87,6 +105,7 @@ export default function AskIndex() {
       setStatus(NO_MATCH_STATUS);
       setAnswer('');
       setOpen(true);
+      setSpoken(NO_MATCH_ANSWER);
       stream(NO_MATCH_ANSWER);
       return;
     }
@@ -106,6 +125,7 @@ export default function AskIndex() {
     setStatus((weak ? 'WEAK MATCH · ' : 'TOP MATCH · ') + hits.length + ' OF ' + index.N + ' FACTS SCORED');
     setAnswer('');
     setOpen(true);
+    setSpoken((weak ? WEAK_PREFIX : '') + top.d.f.text);
     stream((weak ? WEAK_PREFIX : '') + top.d.f.text);
   };
 
@@ -199,7 +219,13 @@ export default function AskIndex() {
         </div>
       </div>
 
-      <div ref={panelRef} className="rk-answer">
+      {/* Announces the finished answer once; deviation 8. */}
+      <div className="rk-sr-only" role="status" aria-live="polite">
+        {spoken}
+      </div>
+
+      {/* inert while closed, so its CLOSE button is not a hidden Tab stop. */}
+      <div ref={panelRef} className="rk-answer" inert={!open} aria-hidden={!open}>
         <div ref={innerRef} className="rk-answer__inner">
           <div className="rk-answer__bar">
             <span>{status}</span>

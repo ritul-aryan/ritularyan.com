@@ -40,7 +40,7 @@ export const FACTS: readonly Fact[] = [
     section: "now",
     title: "Agent architecture",
     text: "SAGE's agents split the work — an orchestrator directing profiling, cleaning, feature-engineering, storytelling and auditing agents. They pass structured state, not prose, which is the only way the audit trail stays useful.",
-    keywords: "agents architecture five multi agent design orchestration state handoff workflow langgraph",
+    keywords: "agents architecture orchestrator multi agent design orchestration state handoff workflow langgraph",
   },
   {
     section: "now",

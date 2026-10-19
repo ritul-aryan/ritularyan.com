@@ -86,7 +86,9 @@ export default function CanvasField() {
         by: 0.5 + Math.sin(a) * r,
         sx: rnd(i + 5),
         sy: rnd(i + 61),
-        p: 0,
+        // Under reduced motion the field is drawn once, so start fully settled
+        // instead of at the scattered intro positions. Deviation 8.
+        p: reduce ? 1 : 0,
         x: 0,
         y: 0,
       };
@@ -136,7 +138,7 @@ export default function CanvasField() {
       const W = cw;
       const H = ch;
       const light = document.documentElement.dataset.theme === 'light';
-      const par = Math.min(scrollSmooth * 0.05, 300);
+      const par = reduce ? 0 : Math.min(scrollSmooth * 0.05, 300);
       ctx.clearRect(0, 0, W, H);
 
       // nebula

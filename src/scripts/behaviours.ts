@@ -521,6 +521,9 @@ function applyFilter(key: string | null): number {
 
 function setPin(key: string | null): void {
   pinned = key;
+  document.querySelectorAll<HTMLElement>('[data-skill]').forEach((s) => {
+    s.setAttribute('aria-pressed', String(!!key && s.dataset.skill === key));
+  });
   const count = applyFilter(key);
   const box = document.querySelector<HTMLElement>('[data-filter-badge]');
   if (!box) return;
@@ -537,7 +540,7 @@ function setPin(key: string | null): void {
     count +
     ' PROJECT' +
     (count === 1 ? '' : 'S') +
-    '</span><span data-clear>✕</span></div>';
+    '</span><button type="button" class="rk-pin__clear" data-clear aria-label="Clear filter">✕</button></div>';
   box.querySelector('[data-clear]')?.addEventListener('click', () => setPin(null));
 }
 
@@ -557,6 +560,23 @@ function stackFilter(): void {
   });
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') setPin(null);
+  });
+
+  // Keyboard parity with the mouse — deviation 8. Focus previews like hover,
+  // Enter or Space pins like a click, leaving the section restores the pin.
+  stack.addEventListener('focusin', (e) => {
+    const el = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-skill]');
+    if (el?.dataset.skill) applyFilter(el.dataset.skill);
+  });
+  stack.addEventListener('focusout', (e) => {
+    if (!stack.contains(e.relatedTarget as Node | null)) applyFilter(pinned);
+  });
+  stack.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const el = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-skill]');
+    if (!el?.dataset.skill) return;
+    e.preventDefault();
+    setPin(pinned === el.dataset.skill ? null : el.dataset.skill);
   });
 }
 

@@ -2088,8 +2088,41 @@ html {
 }
 
 .rk-pin [data-clear] {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
   cursor: pointer;
   opacity: 0.7;
+}
+
+/* ------------------------------------------------------ accessibility ---- */
+/* Deviation 8. A visible focus ring for keyboard users only (:focus-visible),
+ * in the accent colour. :where() keeps specificity at zero, so any component
+ * that already styles its own focus state (the loader SKIP) still wins. */
+:where(a, button, [tabindex]):focus-visible {
+  outline: 1px solid var(--rk-acc);
+  outline-offset: 3px;
+}
+
+/* The search input hides its own outline; the box shows focus instead. */
+.rk-ask__box:focus-within {
+  border-color: var(--rk-acc);
+}
+
+/* Present for screen readers, invisible on screen. */
+.rk-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ----------------------------------------------------------- /fast page ---- */
